@@ -1,6 +1,7 @@
 .input-bg-color {
   max-width: 500px !important;
   height: 60px !important;
+  margin-bottom: 30px;
 }
 
 
@@ -9,24 +10,33 @@
   margin: 50px auto;
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
+}
 
+.css-qqfgvy {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
 }
 
 .error-message {
   color: crimson;
   font-size: 12px;
-  margin-top: 4px;
+  margin-top: -24px;
+  margin-bottom: 24px;
 }
 
 .form-container {
   display: flex;
   flex-direction: column;
-  gap: 26px !important;
 }
 
 .create-span-link {
   color: var(--main, #614FE0);
+}
+
+.css-itvw0n {
+  margin-bottom: 24px !important;
 }
 
 .create-button {
@@ -45,51 +55,58 @@
   gap: 16px;
 }
 
+.css-1v3uajd {
+  top: 13% !important;
+}
+
 @media (max-width: 732px) {
 
   .input-bg-color {
     max-width: 320px !important;
     height: 48px !important;
+    margin-bottom: 30px;
   }
-  
-  
+
+
   .container-form {
     max-width: 320px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: 16px;
-  
+
   }
-  
+
   .form-container {
     display: flex;
     flex-direction: column;
-    gap: 16px;
   }
-  
+
+  .css-itvw0n {
+    margin-bottom: 24px !important;
+  }
+
   .create-span-link {
     color: var(--main, #614FE0);
   }
-  
+
   .create-button {
     height: 48px !important;
     width: 100% !important;
   }
-  
+
   .bold-link {
     font-weight: 600;
   }
-  
+
   .create-box-button {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 16px;
   }
-  
-}
 
-.css-1v3uajd {
-  top: 18% !important;
+  .css-1v3uajd {
+    top: 6% !important;
+  }
 }
