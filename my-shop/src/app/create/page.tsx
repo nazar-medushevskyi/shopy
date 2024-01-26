@@ -1,11 +1,23 @@
 'use client'
 
-
+//@ts-ignore
 import { Box, Text } from '@chakra-ui/react';
 import { FormInput } from '../Components/FormRegistration';
 import Link from '../../../node_modules/next/link';
+import { useEffect } from 'react';
+import { useIsRegistered } from '../hooks/useRegistrationStatus';
+
 
 const Create = () => {
+
+  const isRegistered = useIsRegistered().isRegistered;
+
+  useEffect(() => {
+    if (isRegistered !== null && isRegistered) {
+      window.location.href = '/admin';
+    }
+  }, [isRegistered]);
+  
   return (
     <>
       <Box className='container-form'>

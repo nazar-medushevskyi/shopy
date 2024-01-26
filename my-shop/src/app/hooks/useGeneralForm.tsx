@@ -2,41 +2,38 @@ import { useState } from 'react';
 import { CONFIG_URL } from '../helper/config'
 
 interface Errors {
-  email?: string[];
-  password?: string[];
+  name?: string[];
+  subdomain_name?: string[];
+  currency?: string;
+  user?: string;
 }
 
 interface LoginFormData {
-  email: string;
-  password: string;
-  first_name: string;
-  last_name: string;
+  name: string;
+  subdomain_name: string;
+  currency: string;
 }
 
-export const useLogin = () => {
+export const useGeneralForm = () => {
 
   const [formData, setFormData] = useState<LoginFormData>({
-    email: '',
-    password: '',
-    first_name: 'string',
-    last_name: 'string',
+    name: '',
+    subdomain_name: '',
+    currency: '',
   });
 
   const [errors, setErrors] = useState<Errors>({});
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
-  const [show, setShow] = useState(false);
-  const [isFormInvalid, setIsFormInvalid] = useState(false);
+  const [adminPage, setAdminPage] = useState(false)
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    console.log('Input changed:', e.target.name, e.target.value);
 
-  const handleChange = (e: { target: { name: any; value: any; }; }) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
   };
-
-  const handleClick = () => setShow(!show);
-
 
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
@@ -44,10 +41,12 @@ export const useLogin = () => {
     setErrorMessages([]);
 
     try {
-      const response = await fetch(`${CONFIG_URL}auth/token/`, {
+      const accessToken = localStorage.getItem(`accessToken`);
+      const response = await fetch(`${CONFIG_URL}shop/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`
         },
         body: JSON.stringify(formData),
       });
@@ -60,19 +59,16 @@ export const useLogin = () => {
 
         console.log('User logged in successfully');
 
-        window.location.href = '/admin';
+        setAdminPage(true);
 
       } else {
-        console.error('Login failed');
+        console.error('General failed');
 
         const errorData: Errors = await response.json();
         setErrors(errorData);
         console.error('Server error:', errorData);
 
-        const errorka = [`${errorData}`]
-
         setErrorMessages([`No active account found with the given credentials`]);
-        setIsFormInvalid(true);
 
       }
     } catch (error) {
@@ -84,10 +80,8 @@ export const useLogin = () => {
     formData,
     errors,
     errorMessages,
-    show,
+    adminPage,
     handleChange,
-    handleClick,
     handleSubmit,
-    isFormInvalid,
   };
 };

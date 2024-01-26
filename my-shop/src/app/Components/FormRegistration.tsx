@@ -1,12 +1,18 @@
 'use client'
+//@ts-ignore
 import { usePathname } from 'next/navigation'
+//@ts-ignore
 import dynamic from 'next/dynamic';
+import { HeadingComponent } from './Heading';
+import { ButtonRegistration } from './ButtonRegistration';
 import { useRegistration } from '../hooks/useRegistrationForm';
 import { useLogin } from '../hooks/useLoginForm';
+//@ts-ignore
 import { Icon, Input, Button, InputGroup, InputRightElement, Text, Heading } from '@chakra-ui/react';
+//@ts-ignore
 import { MdVisibility as ViewIcon, MdVisibilityOff as ViewOffIcon } from 'react-icons/md';
 import '../main.scss';
-
+//@ts-ignore
 const useRouter = dynamic(() => import('next/router'), { ssr: false });
 
 
@@ -16,6 +22,7 @@ interface FormInputProps {
   password: string
   description?: string
   isRegistration?: boolean;
+  isFormInvalid?: boolean;
 }
 
 export const FormInput: React.FC<FormInputProps> = (
@@ -25,6 +32,8 @@ export const FormInput: React.FC<FormInputProps> = (
     password,
     description,
     isRegistration = true,
+    isFormInvalid
+
   }
 ) => {
 
@@ -49,17 +58,17 @@ export const FormInput: React.FC<FormInputProps> = (
 
   return (
     <>
-      <Heading as='h3' size='lg'>{title}</Heading>
+      <HeadingComponent title={title} />
 
       <form className='form-container' onSubmit={handleSubmit}>
         <Input
           variant='filled'
-          className={`input-bg-color ${errors.email ? 'isInvalid' : '' || (errorCheck ? 'isInvalid' : '')}`}
+          className={`input-bg-color ${errors.email || isFormInvalid ? 'isInvalid' : ''}`}
           placeholder={email}
           name="email"
           value={formData.email}
           onChange={handleChange}
-          isInvalid={errors.email || errorCheck}
+          isInvalid={errors.email || isFormInvalid}
           errorBorderColor='crimson'
         />
         {errors.email && (
@@ -71,11 +80,11 @@ export const FormInput: React.FC<FormInputProps> = (
         )}
         <InputGroup size='md' variant='filled'>
           <Input
-            className={`input-bg-color ${errors.password ? 'isInvalid' : '' || (errorCheck ? 'isInvalid' : '')}`}
+            className={`input-bg-color ${errors.password || isFormInvalid ? 'isInvalid' : ''}`}
             name="password"
             value={formData.password}
             onChange={handleChange}
-            isInvalid={errors.password || errorCheck}
+            isInvalid={errors.password || isFormInvalid}
             errorBorderColor='crimson'
             pr='4.5rem'
             type={show ? 'text' : 'password'}
@@ -104,7 +113,7 @@ export const FormInput: React.FC<FormInputProps> = (
           <p className='error-message'>{errorMessages}</p>
         )}
 
-        <Button type="submit" className='create-button' colorScheme='purple'>Create Shopy account</Button>
+        <ButtonRegistration btnText={'Create Shopy account'} />
       </form>
     </>
   )

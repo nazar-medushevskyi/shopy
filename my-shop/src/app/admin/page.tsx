@@ -1,22 +1,39 @@
 'use client'
+//@ts-ignore
+import { Box } from '@chakra-ui/react';
+import { useEffect } from 'react';
+import { GeneralRegistration } from '../Components/GeneralRegistration';
+import { useIsRegistered } from '../hooks/useRegistrationStatus';
 
-import { useEffect } from "react";
-
-
-const Admin = () => {
+const Create = () => {
+  const isRegistered = useIsRegistered().isRegistered;
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    if(!accessToken) {
+   
+    if(isRegistered === null || false) {
       window.location.href = '/login';
     }
-  }, [])
+  }, [isRegistered])
+
+  // useEffect(() => {
+  
+  //   if(isRegistered === null || false) {
+  //     window.location.href = '/login';
+  //   }
+  // }, [])
 
   return (
     <>
-      <h1>hello</h1>
+        <GeneralRegistration
+          title={'Your general store info'}
+          storName={'Store name'}
+          storNameEmailShopy={'storename'}
+          currency={['USD', 'UAH']}
+          btnText={'Complete'}
+        />
+        
     </>
   )
 }
 
-export default Admin;
+export default Create;

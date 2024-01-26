@@ -4,6 +4,18 @@
   margin-bottom: 30px;
 }
 
+.chakra-input__group {
+  border-radius: 6px !important;
+}
+
+.input-bg-color-general {
+  max-width: 500px !important;
+  height: 60px !important;
+}
+
+.input-bg-color-general::placeholder {
+  font-size: 18px;
+}
 
 .container-form {
   max-width: 500px;
@@ -24,6 +36,10 @@
   font-size: 12px;
   margin-top: -24px;
   margin-bottom: 24px;
+}
+
+.menu-button-container__text {
+  color: #000;
 }
 
 .form-container {
@@ -59,6 +75,39 @@
   top: 13% !important;
 }
 
+
+.menu-container {
+  max-width: 765px !important;
+  margin: 80px auto !important;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.general-content {
+  margin-top: 80px;
+}
+
+.menu-button-content {
+  height: 80px !important;
+  width: 100% !important;
+  border: 2px solid black;
+  transition: .3s;
+
+  &:hover {
+    background-color: #EDF2F7;
+    ;
+  }
+}
+
+.menu-button-container {
+  display: flex !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  width: 50% !important;
+  gap: 50px;
+}
+
 @media (max-width: 732px) {
 
   .input-bg-color {
@@ -67,10 +116,15 @@
     margin-bottom: 30px;
   }
 
+  .input-bg-color-general {
+    max-width: 320px !important;
+    height: 48px !important;
+  }
+
 
   .container-form {
-    max-width: 320px;
-    margin: 0 auto;
+    max-width: 300px;
+    margin: 20px auto;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -109,4 +163,70 @@
   .css-1v3uajd {
     top: 6% !important;
   }
+
+  .admin-header,
+  .menu__top {
+    margin: 20px 20px 40px 20px !important;
+  }
+
+  .menu-container {
+    margin: 20px 20px !important;
+  }
+
+
+  .nav {
+    margin: 70px 20px !important;
+  }
+}
+
+.form-container-adminGeneral {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+}
+
+.input-bg-colorAndSize {
+  max-width: 320px !important;
+  height: 48px !important;
+}
+
+
+.admin-header {
+  max-width: 765px;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  /* Transition opacity and visibility */
+  box-sizing: border-box;
+  height: 100vh;
+  background: #fff;
+  z-index: 999;
+}
+
+.menu:target {
+  opacity: 1;
+  visibility: visible;
+}
+
+.menu__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 765px;
+  margin: 20px auto;
+}
+
+.image-logo-header {
+  border-radius: 50%;
 }

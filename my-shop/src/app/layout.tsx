@@ -1,4 +1,6 @@
+//@ts-ignore
 import { ChakraProvider } from "@chakra-ui/react";
+//@ts-ignore
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

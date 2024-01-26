@@ -40,7 +40,7 @@ export const useRegistration = () => {
     setErrorMessages([]);
   
     try {
-      const response = await fetch(`${CONFIG_URL}registration/`, {
+      const response = await fetch(`${CONFIG_URL}auth/registration/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export const useRegistration = () => {
         const token = responseData.token;
         console.log('User registered successfully');
         
-        const tokenResponse = await fetch(`${CONFIG_URL}token/`, {
+        const tokenResponse = await fetch(`${CONFIG_URL}auth/token/`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -67,6 +67,8 @@ export const useRegistration = () => {
           const accessToken = tokenData.access;
           console.log('Token received successfully:', accessToken);
           localStorage.setItem('accessToken', accessToken);
+
+          window.location.href = '/admin'
         } else {
           console.error('Token retrieval failed');
         }
