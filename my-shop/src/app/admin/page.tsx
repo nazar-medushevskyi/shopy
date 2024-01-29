@@ -5,22 +5,22 @@ import { useEffect } from 'react';
 import { GeneralRegistration } from '../Components/GeneralRegistration';
 import { useIsRegistered } from '../hooks/useRegistrationStatus';
 
-const Create = () => {
+const Admin = () => {
   const isRegistered = useIsRegistered().isRegistered;
 
   useEffect(() => {
-   
-    if(isRegistered === null || false) {
-      window.location.href = '/login';
-    }
-  }, [isRegistered])
+    const accessToken = localStorage.getItem('accessToken');
 
-  // useEffect(() => {
-  
-  //   if(isRegistered === null || false) {
-  //     window.location.href = '/login';
-  //   }
-  // }, [])
+    if (!accessToken) {
+      window.location.href = '/login'; // Если токен отсутствует, перенаправляем на страницу входа
+    } else {
+      if (isRegistered === null || isRegistered === false) {
+        // Если пользователь не зарегистрирован, ничего не делаем, оставляем на текущей странице
+      } else {
+        window.location.href = '/admin'; // Если пользователь зарегистрирован, перенаправляем на страницу администратора
+      }
+    }
+  }, [isRegistered]);
 
   return (
     <>
@@ -36,4 +36,4 @@ const Create = () => {
   )
 }
 
-export default Create;
+export default Admin;

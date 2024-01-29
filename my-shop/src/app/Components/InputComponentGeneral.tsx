@@ -1,20 +1,20 @@
+import { useGeneralForm } from '../hooks/useGeneralForm';
 
 //@ts-ignore
 import { Input, InputGroup, InputRightAddon } from '@chakra-ui/react';
 
-interface InputComponentProps {
+interface InputComponentGeneralProps {
   storName: string;
   storNameEmailShopy: string;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void; // Объявляем функцию handleChange как пропс
-  formData: any; // Объявляем объект formData как пропс
 }
 
-export const InputComponent: React.FC<InputComponentProps> = ({
+export const InputComponentGeneral: React.FC<InputComponentGeneralProps> = ({
   storName,
-  storNameEmailShopy,
-  handleChange,
-  formData,
+  storNameEmailShopy
 }) => {
+
+  const { handleChange, formData } = useGeneralForm();
+
 
   return (
     <>

@@ -1,35 +1,30 @@
 'use client'
 import { AdminHeader } from '../../Components/AdminHeader';
 import { HeadingComponent } from '@/app/Components/Heading';
-import { InputComponent } from '@/app/Components/InputComponent';
-import { ButtonRegistration } from '@/app/Components/ButtonRegistration';
+import { InputComponentGeneral } from '@/app/Components/InputComponentGeneral';
+import { ButtonSave } from '@/app/Components/ButtonSave';
 //@ts-ignore
-import { Link, Heading, Box } from '@chakra-ui/react';
-import '../../main.scss';
+import { Box } from '@chakra-ui/react';
+import '../../main.scss'
 
-
-
-
-const Nazar = () => {
+const General = () => {
 
   return (
     <>
       <AdminHeader />
-      <Box className='container-form general-content'>
-      <HeadingComponent title={'General'} />
+      <Box className='container-form adminPagesBox'>
+      {/* <HeadingComponent title={'General'} /> */}
 
         <form className='form-container-adminGeneral'>
-          <InputComponent
+          <InputComponentGeneral
             storName={'Store name'}
-            storNameEmailShopy={'.shopy.com'} />
+            storNameEmailShopy={'storename'} />
 
-          <ButtonRegistration btnText={'Save'} />
+          <ButtonSave btnText={'Save'} />
         </form>
       </Box>
-
-      <Link href='/nazarTwo'>Link</Link>
     </>
   )
 }
 
-export default Nazar;
+export default General;

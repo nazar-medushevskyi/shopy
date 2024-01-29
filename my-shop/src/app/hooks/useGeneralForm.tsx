@@ -19,7 +19,7 @@ export const useGeneralForm = () => {
   const [formData, setFormData] = useState<LoginFormData>({
     name: '',
     subdomain_name: '',
-    currency: '',
+    currency: 'USD',
   });
 
   const [errors, setErrors] = useState<Errors>({});

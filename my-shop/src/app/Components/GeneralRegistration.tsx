@@ -32,13 +32,13 @@ export const GeneralRegistration: React.FC<GeenralInfoProps> = (
 
 
   const isRegistered = useIsRegistered().isRegistered;
-  const { handleChange, handleSubmit, formData, errorMessages, errors, adminPage } = useGeneralForm();
-  const pageAdmin = adminPage
+  const { handleChange, handleSubmit, formData, adminPage } = useGeneralForm();
+  const pageAdmin = adminPage;
 
 
   return (
     <>
-      {pageAdmin && isRegistered ? (
+      {(pageAdmin && isRegistered) || (pageAdmin || isRegistered)  ? (
         <>
           <AdminHeader />
         </>
@@ -52,6 +52,8 @@ export const GeneralRegistration: React.FC<GeenralInfoProps> = (
               <InputComponent
                 storName={storName}
                 storNameEmailShopy={storNameEmailShopy}
+                handleChange={handleChange}
+                formData={formData}
               />
 
               <Select
