@@ -6,7 +6,7 @@ interface InputComponentProps {
   storName: string;
   storNameEmailShopy: string;
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void; // Объявляем функцию handleChange как пропс
-  formData: any; // Объявляем объект formData как пропс
+  formData: any;
 }
 
 export const InputComponent: React.FC<InputComponentProps> = ({

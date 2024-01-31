@@ -97,9 +97,53 @@
   transition: .3s;
 
   &:hover {
-    background-color: #EDF2F7;
-    ;
+    background-color: #805ad5;
   }
+}
+
+// .menu-button-content::before,
+// .menu-button-content::after {
+//   content: "";
+//   position: absolute;
+//   top: 0;
+//   bottom: 0;
+//   transition: width 0.3s ease-in-out;
+//   background-color: #805ad5;
+//   z-index: -1;
+// }
+
+// .menu-button-content::before {
+//   left: 0;
+//   width: 0;
+// }
+
+// .menu-button-content::after {
+//   right: 0;
+//   width: 0;
+// }
+
+// .menu-button-content:hover::before {
+//   width: 100%;
+// }
+
+// .menu-button-content:hover::after {
+//   width: 100%;
+// }
+
+.menu-button-content:hover .menu-button-container__text {
+  color: white !important;
+}
+
+.active-adminPage-link {
+  height: 80px !important;
+  width: 100% !important;
+  border: 2px solid black;
+  transition: .3s;
+  background-color: #805ad5 !important;
+}
+
+.active-adminPageText {
+  color: white !important;
 }
 
 .menu-button-container {
@@ -216,6 +260,10 @@
 
 @media (max-width: 732px) {
 
+  .menu-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
   .input-bg-color {
     max-width: 320px !important;
     height: 48px !important;
@@ -226,7 +274,6 @@
     max-width: 320px !important;
     height: 48px !important;
   }
-
 
   .container-form {
     max-width: 300px;

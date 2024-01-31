@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation'
 import { useState } from 'react';
 import { CONFIG_URL } from '../helper/config'
 
@@ -14,6 +15,7 @@ interface LoginFormData {
 }
 
 export const useLogin = () => {
+  const router = useRouter();
 
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
@@ -54,13 +56,13 @@ export const useLogin = () => {
 
       if (response.ok) {
         const responseData = await response.json();
-        const token = responseData.token;
+        const token = responseData.access;
         console.log(token)
         localStorage.setItem('accessToken', token);
 
         console.log('User logged in successfully');
 
-        window.location.href = '/admin';
+        router.push('/admin');
 
       } else {
         console.error('Login failed');

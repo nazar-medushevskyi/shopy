@@ -13,6 +13,7 @@ import { useIsRegistered } from '../hooks/useRegistrationStatus';
 
 //@ts-ignore
 import { HamburgerIcon as BurgerIcon } from 'react-icons/md';
+import { useEffect, useState } from 'react';
 
 interface GeenralInfoProps {
   title: string;
@@ -31,14 +32,18 @@ export const GeneralRegistration: React.FC<GeenralInfoProps> = (
   }) => {
 
 
-  const isRegistered = useIsRegistered().isRegistered;
+  const isRegistered = useIsRegistered().selectedShopId;
   const { handleChange, handleSubmit, formData, adminPage } = useGeneralForm();
-  const pageAdmin = adminPage;
+  const [pageAdmin, setPageAdmin] = useState(adminPage);
+
+  useEffect(() => {
+    setPageAdmin(adminPage || (isRegistered === true));
+  }, [adminPage, isRegistered])
 
 
   return (
     <>
-      {(pageAdmin && isRegistered) || (pageAdmin || isRegistered)  ? (
+      {pageAdmin ? (
         <>
           <AdminHeader />
         </>

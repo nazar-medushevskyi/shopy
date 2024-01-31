@@ -1,3 +1,4 @@
+import { useRouter } from 'next/navigation'
 import { useState } from 'react';
 import { CONFIG_URL } from '../helper/config'
 
@@ -14,6 +15,8 @@ interface RegistrationFormData {
 }
 
 export const useRegistration = () => {
+  const router = useRouter();
+
   const [formData, setFormData] = useState<RegistrationFormData>({
     email: '',
     password: '',
@@ -68,7 +71,7 @@ export const useRegistration = () => {
           console.log('Token received successfully:', accessToken);
           localStorage.setItem('accessToken', accessToken);
 
-          window.location.href = '/admin'
+          router.push('/admin');
         } else {
           console.error('Token retrieval failed');
         }

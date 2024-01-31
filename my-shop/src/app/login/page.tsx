@@ -1,19 +1,23 @@
 'use client'
 
 //@ts-ignore
+import { useRouter } from 'next/navigation'
 import { Box, Text } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { FormInput } from '../Components/FormRegistration';
 import { useIsRegistered } from '../hooks/useRegistrationStatus';
 
-const Create = () => {
+const Login = () => {
+  const router = useRouter();
 
-  const isRegistered = useIsRegistered().isRegistered;
+  const isRegistered = useIsRegistered().selectedShopId;
 
   useEffect(() => {
-    console.log(isRegistered);
-    if (isRegistered !== null && isRegistered) {
-      window.location.href = '/admin';
+    console.log(isRegistered)
+    if (isRegistered === true) {
+      if (!window.location.pathname.startsWith('/admin')) {
+        router.push('/admin');
+      }
     }
   }, [isRegistered]);
 
@@ -34,4 +38,4 @@ const Create = () => {
   )
 }
 
-export default Create;
+export default Login;

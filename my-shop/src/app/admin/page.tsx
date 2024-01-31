@@ -1,29 +1,41 @@
 'use client'
 //@ts-ignore
 import { Box } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { useRouter } from 'next/navigation'
+import { AdminHeader } from '../Components/AdminHeader';
+import { useEffect, useState } from 'react';
 import { GeneralRegistration } from '../Components/GeneralRegistration';
 import { useIsRegistered } from '../hooks/useRegistrationStatus';
 
 const Admin = () => {
-  const isRegistered = useIsRegistered().isRegistered;
+  const router = useRouter();
+
+  const isRegistered = useIsRegistered().selectedShopId;
+  const [text, setState] = useState(false)
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
 
     if (!accessToken) {
-      window.location.href = '/login'; // Если токен отсутствует, перенаправляем на страницу входа
+      router.push('/login');
     } else {
       if (isRegistered === null || isRegistered === false) {
-        // Если пользователь не зарегистрирован, ничего не делаем, оставляем на текущей странице
       } else {
-        window.location.href = '/admin'; // Если пользователь зарегистрирован, перенаправляем на страницу администратора
+        setState(true)
+
       }
     }
   }, [isRegistered]);
 
   return (
     <>
+
+      {(text) ? (
+        <>
+          <AdminHeader />
+        </>
+      ) : (
+
         <GeneralRegistration
           title={'Your general store info'}
           storName={'Store name'}
@@ -31,7 +43,8 @@ const Admin = () => {
           currency={['USD', 'UAH']}
           btnText={'Complete'}
         />
-        
+      )
+      }
     </>
   )
 }

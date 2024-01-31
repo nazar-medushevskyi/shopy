@@ -6,8 +6,9 @@ interface AuthResponse {
 }
 
 export const useIsRegistered = () => {
-  const [isRegistered, setIsRegistered] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedShopId, setSelectedShopId] = useState(null);
+
 
   useEffect(() => {
     const fetchIsRegistered = async () => {
@@ -23,7 +24,8 @@ export const useIsRegistered = () => {
 
         if (response.ok) {
           const responseData: AuthResponse = await response.json();
-          setIsRegistered(responseData.is_registered);
+          //@ts-ignore
+          setSelectedShopId(responseData.shops[0].id)
         } else {
           const errorData = await response.json();
           setError(`Failed to fetch is_registered: ${errorData.message}`);
@@ -37,7 +39,7 @@ export const useIsRegistered = () => {
   }, []);
 
   return {
-    isRegistered,
     error,
+    selectedShopId,
   };
 };

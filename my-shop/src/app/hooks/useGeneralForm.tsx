@@ -52,15 +52,8 @@ export const useGeneralForm = () => {
       });
 
       if (response.ok) {
-        const responseData = await response.json();
-        const token = responseData.token;
-        console.log(token)
-        localStorage.setItem('accessToken', token);
-
-        console.log('User logged in successfully');
-
         setAdminPage(true);
-
+        
       } else {
         console.error('General failed');
 
