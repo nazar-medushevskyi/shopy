@@ -1,3 +1,4 @@
+//@ts-ignore
 import { useRouter } from 'next/navigation'
 import { useState } from 'react';
 import { CONFIG_URL } from '../helper/config'

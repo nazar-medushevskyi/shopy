@@ -9,7 +9,6 @@ export const useIsRegistered = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedShopId, setSelectedShopId] = useState(null);
 
-
   useEffect(() => {
     const fetchIsRegistered = async () => {
       try {

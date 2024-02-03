@@ -25,6 +25,7 @@ const General = () => {
           <InputComponent
             storName={formData.name}
             storNameEmailShopy={formData.subdomain_name}
+            //@ts-ignore
             handleChange={handleChange}
             formData={formData}
           />

@@ -2,6 +2,7 @@
 
 //@ts-ignore
 import { useRouter } from 'next/navigation'
+//@ts-ignore
 import { Box, Text } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { FormInput } from '../Components/FormRegistration';

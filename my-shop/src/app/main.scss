@@ -242,9 +242,9 @@
 }
 
 .buttonAdd {
-  position: absolute !important;
-  bottom: 0;
-  right: 0;
+  position: fixed !important;
+  bottom: 10%;
+  right: 5%;
 }
 
 .adminPagesBox {
@@ -343,7 +343,7 @@
   }
 
   .buttonAdd {
-    position: absolute !important;
+    position: fixed !important;
     bottom: 0;
     right: 20px;
   }
