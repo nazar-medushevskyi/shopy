@@ -1,31 +1,36 @@
 'use client'
-import { useProductsForm } from '@/app/hooks/useProductsForm'
 //@ts-ignore
 import { Button, Box } from '@chakra-ui/react'
 //@ts-ignore
 import { AdminHeader } from '@/app/Components/AdminHeader'
 import { AdminCategoriesComponent } from '@/app/Components/AdminCategories'
 import { Products } from '@/app/typesProduct'
-import '../../main.scss'
-import Link from '../../../../node_modules/next/link'
-import { useEffect, useState } from 'react'
+import '../main.scss'
+import Link from '../../../node_modules/next/link'
 
-const Productss = () => {
+interface ProductsList {
+  products: Products[];
+  handleDelete: (id: number) => void;
+}
 
-  const { products, handleDelete } = useProductsForm()
+
+export const RenderingProductsList: React.FC<ProductsList> = (
+  {products, handleDelete}
+  ) => {
 
   return (
     <>
       <Box className='adminPagesBox categoriesBox '>
         <AdminHeader />
 
-        {products.map((product) => (
+        {products.map((el: Products) => (
           <AdminCategoriesComponent
-            key={product.id}
-            title={product.name}
-            imageUrl="/images/category/categories/defaultIcon.svg" handleDelete={function (): void {
-              throw new Error('Function not implemented.')
-            } }          />
+            product={el}
+            handleDelete={handleDelete}
+            key={el.id}
+            title={el.name}
+            imageUrl="/images/category/categories/defaultIcon.svg"
+          />
         ))}
 
         <Link href='/admin/products/add'>
@@ -35,5 +40,3 @@ const Productss = () => {
     </>
   )
 }
-
-export default Productss;

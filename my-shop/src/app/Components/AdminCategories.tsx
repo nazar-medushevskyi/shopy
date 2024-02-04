@@ -5,7 +5,7 @@ import { Text, Image } from '@chakra-ui/react'
 interface AdminCategoriesComponentProps {
   title: string;
   imageUrl?: string;
-  handleDelete: (id: number) => void;
+  handleDelete: () => void;
 }
 
 
@@ -50,7 +50,7 @@ export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> =
                   width={20}
                   height={20}
                   alt="Picture of the author"
-                  onClick={handleDelete}
+                  onClick={(handleDelete)}
                 />
               </div>
             </div>

@@ -27,6 +27,30 @@ export const useProductsForm = () => {
     });
   };
 
+  const fetchProducts = async () => {
+    const accessToken = localStorage.getItem(`accessToken`);
+    try {
+      const response = await fetch(`${CONFIG_URL}shop/${selectedShopId}/products/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        setProductIdTake(responseData.results[0].id)
+        setProducts(responseData);
+
+      } else {
+        console.error('Failed to fetch products');
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
@@ -44,6 +68,7 @@ export const useProductsForm = () => {
       });
 
       if (response.ok) {
+        await fetchProducts()
         const responseData = await response.json();
         console.log(responseData.id);
 
@@ -59,35 +84,6 @@ export const useProductsForm = () => {
       }
     } catch (error) {
 
-    }
-  };
-
-  const fetchProducts = async () => {
-    const accessToken = localStorage.getItem(`accessToken`);
-    try {
-      const response = await fetch(`${CONFIG_URL}shop/${selectedShopId}/products/`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        setProductIdTake(responseData.results[0].id)
-        const simplifiedProducts = responseData.results.map((result: any) => ({
-          name: result.name,
-          description: result.description,
-          price: result.price,
-
-        }));
-        setProducts(simplifiedProducts);
-      } else {
-        console.error('Failed to fetch products');
-      }
-    } catch (error) {
-      console.error('Error fetching products:', error);
     }
   };
 
