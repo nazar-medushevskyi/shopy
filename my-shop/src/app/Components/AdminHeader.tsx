@@ -36,13 +36,6 @@ export const AdminHeader = () => {
       { id: 3, name: 'Products', image: '/images/category/mod.svg', defaultImage: '/images/category/default.svg', link: products },
       { id: 4, name: 'Orders', image: '/images/category/ul.svg', defaultImage: '/images/category/default.svg', link: orders },
     ],
-
-    // witeColors: [
-    //   { id: 1,  image: '/images/category/default.svg',  },
-    //   { id: 2, image: '/images/category/default.svg',  },
-    //   { id: 3, image: '/images/category/default.svg', },
-    //   { id: 4, image: '/images/category/default.svg',  },
-    // ]
   };
 
   return (

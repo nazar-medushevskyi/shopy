@@ -6,16 +6,22 @@ interface AdminCategoriesComponentProps {
   title: string;
   imageUrl?: string;
   handleDelete: () => void;
+  handleEdit: () => void;
+  product: Products
+  onckickModal: () => void;
+  setSelectId: () => void;
 }
 
 
 export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> = ({
+  product,
   imageUrl,
   title,
   handleDelete,
+  handleEdit,
+  onckickModal,
+  setSelectId,
 }) => {
-
-
 
   return (
     <>
@@ -36,22 +42,33 @@ export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> =
               </div>
 
               <div className="adminCategoriesBlock-content__actions">
+
+              <button onClick={onckickModal} type="button" className='css-172cj4q'>
                 <Image
-                  className='adminCategoriesBlock-content__actions-edit'
+                  className='adminCategoriesBlock-content__actions-edi'
                   src='/images/category/categories/edit.svg'
                   width={20}
                   height={20}
                   alt="Picture of the author"
+                  onClick={() => {setSelectId(product.id), handleEdit(product.id)} }
+                  
                 />
+                </button>
 
+                <button type="button" className='css-172cj4q'>
                 <Image
-                  className='adminCategoriesBlock-content__actions-delete'
+                  className='adminCategoriesBlock-content__actions-delete css-172cj4q'
                   src='/images/category/categories/basket.svg'
                   width={20}
                   height={20}
                   alt="Picture of the author"
-                  onClick={(handleDelete)}
-                />
+                  onClick={() => {
+                    console.log('Product ID:', product.id);
+                    handleDelete(product.id);
+                    console.log('Product:', product);
+
+                  }}/>
+                  </button>
               </div>
             </div>
             <div className="adminCategoriesBlock-line" />

@@ -1,6 +1,3 @@
-import { useProductsForm } from "../hooks/useProductsForm";
-import { AdminInputName } from "./AdminInputName";
-
 //@ts-ignore
 import { Input, InputGroup, InputRightElement } from '@chakra-ui/react';
 //@ts-ignore
@@ -31,7 +28,7 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
         name='name'
         errorBorderColor='crimson'
         onChange={handleChange}
-        value={formData.name}
+        value={formData.name || name}
       />
       <Input
         className='input-bg-color-general'
@@ -40,7 +37,7 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
         name='description'
         errorBorderColor='crimson'
         onChange={handleChange}
-        value={formData.description}
+        value={formData.description || description}
       />
 
       <InputGroup className='input-bg-color-general'>
@@ -51,7 +48,7 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
           placeholder={sum}
           name='price'
           onChange={handleChange}
-          value={formData.price}
+          value={formData.price || sum}
         />
         <InputRightElement
           className='input-bg-color-general'

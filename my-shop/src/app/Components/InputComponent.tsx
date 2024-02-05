@@ -5,7 +5,7 @@ import { Input, InputGroup, InputRightAddon } from '@chakra-ui/react';
 interface InputComponentProps {
   storName: string;
   storNameEmailShopy: string;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void; // Объявляем функцию handleChange как пропс
+  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
   formData: any;
 }
 

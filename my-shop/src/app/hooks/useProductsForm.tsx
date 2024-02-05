@@ -4,13 +4,16 @@ import { useState } from 'react';
 import { CONFIG_URL } from '../helper/config';
 import { useIsRegistered } from './useRegistrationStatus';
 import { Products } from '../typesProduct';
+import { useRouter } from '../../../node_modules/next/navigation';
 
 export const useProductsForm = () => {
 
+  const router = useRouter()
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
+    id: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -18,7 +21,6 @@ export const useProductsForm = () => {
   const [products, setProducts] = useState<Products[]>([]);
   const selectedShopId = useIsRegistered().selectedShopId;
   const [productIdTake, setProductIdTake] = useState(null)
-  const [addedProductIds, setAddedProductIds] = useState<number[]>([]);
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setFormData({
@@ -27,29 +29,6 @@ export const useProductsForm = () => {
     });
   };
 
-  const fetchProducts = async () => {
-    const accessToken = localStorage.getItem(`accessToken`);
-    try {
-      const response = await fetch(`${CONFIG_URL}shop/${selectedShopId}/products/`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        setProductIdTake(responseData.results[0].id)
-        setProducts(responseData);
-
-      } else {
-        console.error('Failed to fetch products');
-      }
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
-  };
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -68,13 +47,9 @@ export const useProductsForm = () => {
       });
 
       if (response.ok) {
-        await fetchProducts()
         const responseData = await response.json();
         console.log(responseData.id);
-
-        setAddedProductIds([...addedProductIds, responseData.id]);
-
-        await console.log(addedProductIds);
+        router.push('/admin/products');
       } else {
         console.log('not good query with post method');
 
@@ -87,18 +62,11 @@ export const useProductsForm = () => {
     }
   };
 
-
-
-  const handleDelete = async (productId: number) => {
+  const fetchProducts = async () => {
+    const accessToken = localStorage.getItem(`accessToken`);
     try {
-      const initialProductIds = [...addedProductIds];
-      const updatedProductIds = addedProductIds.filter(id => id !== productId);
-      const deletedProductId = initialProductIds.find(id => !updatedProductIds.includes(id));
-
-
-      const accessToken = localStorage.getItem(`accessToken`);
-      const response = await fetch(`${CONFIG_URL}shop/${selectedShopId}/products/${deletedProductId}/`, {
-        method: 'DELETE',
+      const response = await fetch(`${CONFIG_URL}shop/${selectedShopId}/products/`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
@@ -106,19 +74,22 @@ export const useProductsForm = () => {
       });
 
       if (response.ok) {
-        console.log('Product deleted successfully');
-        setAddedProductIds(updatedProductIds);
-
+        const responseData = await response.json();
+        setProductIdTake(responseData.results[0].id)
+        const simplifiedProducts = responseData.results.map((result: any) => ({
+          name: result.name,
+          description: result.description,
+          price: result.price,
+          id: result.id,
+        }));
+        setProducts(simplifiedProducts);
       } else {
-        console.log('Error deleting product');
-        const errorData = await response.json();
-        console.error('Server error:', errorData);
+        console.error('Failed to fetch products');
       }
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching products:', error);
     }
   };
-
 
   return {
     formData,
@@ -126,11 +97,8 @@ export const useProductsForm = () => {
     errorMessages,
     handleChange,
     handleSubmit,
-    handleDelete,
     products,
     productIdTake,
     fetchProducts,
-    addedProductIds,
-
   };
 };

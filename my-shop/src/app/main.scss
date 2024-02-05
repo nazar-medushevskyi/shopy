@@ -258,10 +258,32 @@
   margin: 0 auto;
 }
 
+.css-k0waxj {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.css-efhinx {
+  margin-top: 8% !important;
+  height: 400px !important;
+}
+
+.css-1k6yooi {
+  margin-bottom: 10px !important;
+}
+
+.btnSaveModal {
+  max-width: 400px !important;
+}
+
 @media (max-width: 732px) {
 
   .menu-container {
     grid-template-columns: repeat(1, 1fr);
+  }
+
+  .css-efhinx {
+    margin-top: 30% !important;
   }
 
   .input-bg-color {
