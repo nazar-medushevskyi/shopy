@@ -15,7 +15,7 @@ import axios from '../../../../node_modules/axios/index'
 
 const Categories = () => {
 
-  const { categories, formData, fetchCetegories } = useCategoriesForm()
+  const { categories, fetchCetegories } = useCategoriesForm()
   const [selectedId, setSelectedId] = useState();
   const selectedShopId = useIsRegistered().selectedShopId
   const accessToken = localStorage.getItem(`accessToken`);

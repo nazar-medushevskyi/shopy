@@ -20,6 +20,8 @@ export const useCategoriesForm = () => {
   const selectedShopId = useIsRegistered().selectedShopId;
   const [categoriesIdTake, setCategoriesTake] = useState(null)
 
+  const API = `${CONFIG_URL}shop/${selectedShopId}/categories/`
+
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setFormData({
       ...formData,
@@ -35,7 +37,7 @@ export const useCategoriesForm = () => {
 
     try {
       const accessToken = localStorage.getItem(`accessToken`);
-      const response = await fetch(`${CONFIG_URL}shop/${selectedShopId}/categories/`, {
+      const response = await fetch(`${API}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +65,7 @@ export const useCategoriesForm = () => {
   const fetchCetegories = async () => {
     const accessToken = localStorage.getItem(`accessToken`);
     try {
-      const response = await fetch(`${CONFIG_URL}shop/${selectedShopId}/categories/`, {
+      const response = await fetch(`${API}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +85,7 @@ export const useCategoriesForm = () => {
         console.error('Failed to fetch Categories');
       }
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error('Error fetching categories:', error);
     }
   };
 

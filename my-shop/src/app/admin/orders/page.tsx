@@ -1,5 +1,5 @@
 'use client'
-import { useProductsForm } from '@/app/hooks/useProductsForm'
+import { useOrders } from '@/app/hooks/useOrders'
 //@ts-ignore
 import { Box } from '@chakra-ui/react'
 //@ts-ignore
@@ -7,16 +7,24 @@ import { AdminHeader } from '@/app/Components/AdminHeader'
 import { AdminCategoriesComponent } from '@/app/Components/AdminCategories'
 import '../../main.scss'
 import { title } from 'process'
+import { useEffect } from 'react'
 
 const Orders = () => {
 
-  const { handleDelete } = useProductsForm()
+  const { fetchOrders, ordersIdTake } = useOrders()
+
+  useEffect(() => {
+    fetchOrders()
+  }, []);
 
   return (
     <>
       <Box className='adminPagesBox'>
         <AdminHeader />
-        <AdminCategoriesComponent handleDelete={handleDelete} title={title} />
+        <AdminCategoriesComponent
+          //@ts-ignore
+          handleDelete={() => { }}
+          title={title} />
       </Box>
     </>
   )
