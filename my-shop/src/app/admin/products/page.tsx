@@ -1,4 +1,5 @@
 'use client'
+
 import {
   Modal,
   ModalOverlay,
@@ -8,7 +9,9 @@ import {
   ModalBody,
   ModalCloseButton,
   useDisclosure,
-} from '@chakra-ui/react'
+}
+  //@ts-ignore
+  from '@chakra-ui/react'
 
 import { useEditProductsForm } from '@/app/hooks/useEditProductsForm'
 import { useProductsForm } from '@/app/hooks/useProductsForm'
@@ -109,11 +112,12 @@ const Productss = () => {
       });
 
       fetchProducts()
-    } catch(error) {
+    } catch (error) {
       console.log('error', error)
     }
   }
 
+  //@ts-ignore
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProductData((prevData) => ({
@@ -134,12 +138,14 @@ const Productss = () => {
               onOpen()
               handleGet(product.id);
             }}
+            //@ts-ignore
             setSelectId={setSelectedId}
             product={product}
             key={product.id}
             title={product.name}
             handleEdit={() => handleGet(product.id)}
-            handleDelete={() => handleDelete(product.id)}
+            handleDeleteProduct={() => handleDelete(product.id)}
+            handleDeleteCategory={() => {}}
             imageUrl="/images/category/categories/defaultIcon.svg"
           />
         ))}
@@ -157,7 +163,8 @@ const Productss = () => {
           <ModalCloseButton />
           <ModalBody>
             <Box>
-              <form className='form-container-adminGeneral' onSubmit={(e) => handlePath(e, selectedId)}>
+              <form //@ts-ignore
+                className='form-container-adminGeneral' onSubmit={(e) => handlePath(e, selectedId)}>
                 <AdminInputProducts
                   name={String(productData.name)}
                   description={String(productData.description)}
@@ -165,11 +172,11 @@ const Productss = () => {
                   formData={formData}
                   handleChange={handleChange}
                 />
-          <ModalFooter>
-            <ButtonSave btnText='Save' />
-          </ModalFooter>
-          </form>
-          </Box>
+                <ModalFooter>
+                  <ButtonSave btnText='Save' />
+                </ModalFooter>
+              </form>
+            </Box>
           </ModalBody>
         </ModalContent>
       </Modal>

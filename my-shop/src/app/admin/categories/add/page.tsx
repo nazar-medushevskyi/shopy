@@ -1,4 +1,6 @@
 'use client'
+
+import { useCategoriesForm } from '@/app/hooks/useCategoriesForm';
 //@ts-ignore
 import { AdminHeader } from '@/app/Components/AdminHeader';
 import { AdminInputName } from '@/app/Components/AdminInputName';
@@ -9,14 +11,18 @@ import '../../../main.scss';
 
 const CategoriesAdd = () => {
 
+  const { handleSubmit, handleChange, formData } = useCategoriesForm()
+
   return (
     <>
       <AdminHeader />
       <Box className='container-form adminPagesBox'>
 
-        <form className='form-container-adminGeneral'>
+        <form className='form-container-adminGeneral' onSubmit={handleSubmit}>
           <AdminInputName
             name='Name'
+            handleChange={handleChange}
+            formData={formData}
           />
 
           <ButtonSave btnText={'Save'} />

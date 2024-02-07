@@ -7,6 +7,7 @@ interface ProductData {
   description: string;
   price: string;
   id: string;
+  categories?: boolean
 }
 
 export const useEditProductsForm = () => {
@@ -18,6 +19,7 @@ export const useEditProductsForm = () => {
       description: '',
       price: '',
       id: '',
+      categories?: '',
     });
 
     const API = `${CONFIG_URL}shop/${selectedShopId}/products`
@@ -47,6 +49,7 @@ export const useEditProductsForm = () => {
       }
     };
 
+      //@ts-ignore
     fetchProductDetails();
   }, [selectedShopId]);
 

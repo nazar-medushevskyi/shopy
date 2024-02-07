@@ -1,23 +1,28 @@
 import { Products } from '../typesProduct';
 //@ts-ignore
 import { Text, Image } from '@chakra-ui/react'
+import { Categories } from '../typesCategory';
 
 interface AdminCategoriesComponentProps {
   title: string;
   imageUrl?: string;
-  handleDelete: () => void;
+  handleDeleteProduct?: () => void;
+  handleDeleteCategory?: () => void;
   handleEdit: () => void;
-  product: Products
-  onckickModal: () => void;
+  product?: Products;
+  category?: Categories;
+  onckickModal?: () => void;
   setSelectId: () => void;
 }
 
 
 export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> = ({
   product,
+  category,
   imageUrl,
   title,
-  handleDelete,
+  handleDeleteProduct,
+  handleDeleteCategory,
   handleEdit,
   onckickModal,
   setSelectId,
@@ -50,7 +55,8 @@ export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> =
                   width={20}
                   height={20}
                   alt="Picture of the author"
-                  onClick={() => {setSelectId(product.id), handleEdit(product.id)} }
+                    //@ts-ignore
+                  onClick={() => {setSelectId(product.id || category?.id), handleEdit(product.id || category.id)} }
                   
                 />
                 </button>
@@ -63,8 +69,11 @@ export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> =
                   height={20}
                   alt="Picture of the author"
                   onClick={() => {
-                    console.log('Product ID:', product.id);
-                    handleDelete(product.id);
+                      //@ts-ignore
+                    handleDeleteProduct(product?.id);
+                      //@ts-ignore
+                    handleDeleteCategory(category?.id);
+
                     console.log('Product:', product);
 
                   }}/>
