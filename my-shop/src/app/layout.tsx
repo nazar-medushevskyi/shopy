@@ -1,5 +1,7 @@
-import { ChakraProvider } from "@chakra-ui/react"
-import type { Metadata } from "next"
+//@ts-ignore
+import { ChakraProvider } from "@chakra-ui/react";
+//@ts-ignore
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,9 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ChakraProvider cssVarsRoot="body">
-          {children}
-        </ChakraProvider>
+          <ChakraProvider cssVarsRoot="body">
+            {children}
+          </ChakraProvider>
       </body>
     </html>
   )
