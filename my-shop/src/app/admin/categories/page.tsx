@@ -7,55 +7,32 @@ import { AdminHeader } from '@/app/Components/AdminHeader'
 import { AdminCategoriesComponent } from '@/app/Components/AdminCategories'
 import '../../main.scss'
 import Link from '../../../../node_modules/next/link'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Categories } from '@/app/typesCategory'
-import { CONFIG_URL } from '@/app/helper/config'
-import { useIsRegistered } from '@/app/hooks/useRegistrationStatus'
-import axios from '../../../../node_modules/axios/index'
+import { useAppContext } from '@/app/Core/Context'
 
-const Categories = () => {
+const CategoriesPage = () => {
 
-  const { categories, fetchCetegories } = useCategoriesForm()
-  const [selectedId, setSelectedId] = useState();
-  const selectedShopId = useIsRegistered().selectedShopId
-  const accessToken = localStorage.getItem(`accessToken`);
-
-  const API = `${CONFIG_URL}shop/${selectedShopId}/categories`
+  const { categories, fetchCetegories, handleDelete } = useCategoriesForm()
+  const { selectedIdCategory } = useAppContext()
 
   useEffect(() => {
-    fetchCetegories()
-  }, []);
-
-  const handleDelete = async (id: number) => {
-    try {
-      console.log('Deleting category with ID:', id);
-      await axios.delete(`${API}/${id}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      fetchCetegories()
-    } catch (error) {
-      console.error('Error deleting category:', error);
-    }
-  }
-
+    fetchCetegories(); 
+  }, [selectedIdCategory]);
 
   return (
     <>
       <Box className='adminPagesBox categoriesBox '>
         <AdminHeader />
 
+
         {categories && categories.map((category: Categories) => (
           <AdminCategoriesComponent
             category={category}
             key={category.id}
-            //@ts-ignore
-            setSelectId={setSelectedId}
+            title={category.name}
             handleDeleteCategory={() => handleDelete(category.id)}
             handleDeleteProduct={() => {}}
-            title={category.name}
           />
         ))}
 
@@ -67,4 +44,4 @@ const Categories = () => {
   )
 }
 
-export default Categories;
+export default CategoriesPage;

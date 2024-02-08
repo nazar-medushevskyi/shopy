@@ -1,7 +1,5 @@
 'use client'
 //@ts-ignore
-import { Box } from '@chakra-ui/react';
-//@ts-ignore
 import { useRouter } from 'next/navigation'
 import { AdminHeader } from '../Components/AdminHeader';
 import { useEffect, useState } from 'react';

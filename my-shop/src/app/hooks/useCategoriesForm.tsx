@@ -1,10 +1,12 @@
 'use client'
 
 import { useState } from 'react';
+import { useAppContext } from '../Core/Context';
 import { CONFIG_URL } from '../helper/config';
 import { useIsRegistered } from './useRegistrationStatus';
 import { Categories } from '../typesCategory';
 import { useRouter } from '../../../node_modules/next/navigation';
+import axios from '../../../node_modules/axios/index';
 
 export const useCategoriesForm = () => {
 
@@ -14,19 +16,38 @@ export const useCategoriesForm = () => {
     id: '',
   });
 
+  const { selectedIdCategory } = useAppContext()
   const [errors, setErrors] = useState({});
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [categories, setCategories] = useState<Categories[]>([]);
   const selectedShopId = useIsRegistered().selectedShopId;
   const [categoriesIdTake, setCategoriesTake] = useState(null)
+  const accessToken = localStorage.getItem(`accessToken`);
 
   const API = `${CONFIG_URL}shop/${selectedShopId}/categories/`
+  const API_DELETE = `${CONFIG_URL}shop/${selectedShopId}/categories`
+  const API_GET = `${CONFIG_URL}shop/${selectedShopId}/categories/${selectedIdCategory}/`
+  const API_PATCH = `${CONFIG_URL}shop/${selectedShopId}/categories/${selectedIdCategory}/`
+
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const [categoryData, setCategoryData] = useState({
+    name: '',
+  });
+
+  //@ts-ignore
+  const handleChangeEdit = (e: { target: { name: any; value: any } }) => {
+    const { name, value } = e.target;
+    setCategoryData(prevCategoryData => ({
+      ...prevCategoryData,
+      [name]: value,
+    }));
   };
 
 
@@ -36,7 +57,6 @@ export const useCategoriesForm = () => {
     setErrorMessages([]);
 
     try {
-      const accessToken = localStorage.getItem(`accessToken`);
       const response = await fetch(`${API}`, {
         method: 'POST',
         headers: {
@@ -63,7 +83,6 @@ export const useCategoriesForm = () => {
   };
 
   const fetchCetegories = async () => {
-    const accessToken = localStorage.getItem(`accessToken`);
     try {
       const response = await fetch(`${API}`, {
         method: 'GET',
@@ -89,14 +108,70 @@ export const useCategoriesForm = () => {
     }
   };
 
+  const handleDelete = async (id: number) => {
+    try {
+      console.log('Deleting category with ID:', id);
+      await axios.delete(`${API_DELETE}/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      fetchCetegories();
+    } catch (error) {
+      console.error('Error deleting category:', error);
+    }
+  }
+
+  const handleGet = async () => {
+    try {
+      const response = await axios.get(`${API_GET}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const { name } = response.data;
+      setCategoryData({ name });
+      await fetchCetegories();
+    } catch {
+      return null;
+    }
+  };
+
+  //@ts-ignore
+  const handleSubmitEdit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.patch(`${API_PATCH}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const { name } = response.data;
+      setCategoryData({ name });
+      await fetchCetegories();
+    } catch {
+      return null;
+    }
+  }
+
+
   return {
     formData,
     errors,
     errorMessages,
-    handleChange,
-    handleSubmit,
     categories,
     categoriesIdTake,
+    categoryData,
+
     fetchCetegories,
+    handleDelete,
+    handleGet,
+    handleChange,
+    handleSubmit,
+    handleChangeEdit,
+    handleSubmitEdit,
   };
 };

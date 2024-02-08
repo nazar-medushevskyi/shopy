@@ -24,7 +24,7 @@ export const AdminInputName: React.FC<AdminInputNameProps> = (
         onChange={handleChange}
         name="name"
         errorBorderColor='crimson'
-        value={formData.name}
+        value={formData.name || name}
       />
     </>
   )
