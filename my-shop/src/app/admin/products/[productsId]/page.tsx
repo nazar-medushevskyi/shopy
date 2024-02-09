@@ -23,6 +23,9 @@ const ProductsIdContent = () => {
 
   return (
     <>
+
+      <AdminHeader />
+
       <Box className='container-form adminPagesBox'>
 
         ID: {selectedIdProduct}

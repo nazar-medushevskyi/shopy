@@ -33,7 +33,7 @@ export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> =
   const { setSelectedIdCategory, setSelectedIdProduct } = useAppContext()
 
   const linkCategory = `categories/${category?.id}/`
-  const linkProduct = `products${product?.id}/`
+  const linkProduct = `products/${product?.id}/`
 
 
 
