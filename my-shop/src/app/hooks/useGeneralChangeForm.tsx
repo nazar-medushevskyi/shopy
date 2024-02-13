@@ -2,12 +2,16 @@ import { useIsRegistered } from './useRegistrationStatus';
 import { CONFIG_URL } from '../helper/config';
 import { useEffect, useState } from 'react';
 
+//@ts-ignore
+import { useRouter } from 'next/navigation'
+
 interface ShopData {
   name: string;
   subdomain_name: string;
 }
 
 export const useShopDetails = () => {
+  const router = useRouter();
   const [shopDetails, setShopDetails] = useState<ShopData | null>(null);
   const [formData, setFormData] = useState<ShopData>({ name: '', subdomain_name: '' });
   const selectedShopId = useIsRegistered().selectedShopId;
@@ -62,6 +66,10 @@ export const useShopDetails = () => {
       });
       if (!response.ok) {
         throw new Error('Failed to update shop details');
+      }
+
+      if (response.ok) {
+        router.push('/admin/')        
       }
 
       const updatedShopData: ShopData = await response.json();

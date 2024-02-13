@@ -15,6 +15,8 @@ interface LoginFormData {
 }
 
 export const useGeneralForm = () => {
+  const accessToken = localStorage.getItem(`accessToken`);
+
 
   const [formData, setFormData] = useState<LoginFormData>({
     name: '',
@@ -41,7 +43,6 @@ export const useGeneralForm = () => {
     setErrorMessages([]);
 
     try {
-      const accessToken = localStorage.getItem(`accessToken`);
       const response = await fetch(`${CONFIG_URL}shop/`, {
         method: 'POST',
         headers: {
@@ -53,7 +54,7 @@ export const useGeneralForm = () => {
 
       if (response.ok) {
         setAdminPage(true);
-        
+
       } else {
         console.error('General failed');
 

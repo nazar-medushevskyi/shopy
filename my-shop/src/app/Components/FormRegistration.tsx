@@ -5,8 +5,7 @@ import { usePathname } from 'next/navigation'
 import dynamic from 'next/dynamic';
 import { HeadingComponent } from './Heading';
 import { ButtonRegistration } from './ButtonRegistration';
-import { useRegistration } from '../hooks/useRegistrationForm';
-import { useLogin } from '../hooks/useLoginForm';
+import { useFormData } from '../hooks/useFormData';
 //@ts-ignore
 import { Icon, Input, Button, InputGroup, InputRightElement, Text, Heading } from '@chakra-ui/react';
 //@ts-ignore
@@ -21,7 +20,6 @@ interface FormInputProps {
   email: string;
   password: string
   description?: string
-  isRegistration?: boolean;
   isFormInvalid?: boolean;
 }
 
@@ -31,7 +29,6 @@ export const FormInput: React.FC<FormInputProps> = (
     email,
     password,
     description,
-    isRegistration = true,
     isFormInvalid
 
   }
@@ -42,19 +39,19 @@ export const FormInput: React.FC<FormInputProps> = (
   const isLogin = pathname === '/login';
   console.log(isLogin);
 
+  const registrationForm = useFormData('registration');
+  const loginForm = useFormData('login');
 
 
   const {
     handleChange,
     handleClick,
-    handleSubmit,
     errorMessages,
     errors,
     show,
-    formData
-  } = isLogin ? useLogin() : useRegistration();
-
-  const errorCheck = isLogin && errorMessages.length > 1
+    formData,
+    handleSubmit
+  } = isLogin ? loginForm : registrationForm;
 
   return (
     <>

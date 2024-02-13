@@ -8,6 +8,7 @@ import { Categories } from '../typesCategory';
 import { useRouter } from '../../../node_modules/next/navigation';
 import axios from '../../../node_modules/axios/index';
 
+//@ts-ignore
 export const useCategoriesForm = () => {
 
   const router = useRouter()
@@ -22,7 +23,7 @@ export const useCategoriesForm = () => {
   const [categories, setCategories] = useState<Categories[]>([]);
   const selectedShopId = useIsRegistered().selectedShopId;
   const [categoriesIdTake, setCategoriesTake] = useState(null)
-  const accessToken = localStorage.getItem(`accessToken`);
+  const updatedAccessToken = localStorage.getItem(`accessToken`);
 
   const API = `${CONFIG_URL}shop/${selectedShopId}/categories/`
   const API_DELETE = `${CONFIG_URL}shop/${selectedShopId}/categories`
@@ -61,7 +62,7 @@ export const useCategoriesForm = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${updatedAccessToken}`,
         },
         body: JSON.stringify(formData),
       });
@@ -88,7 +89,7 @@ export const useCategoriesForm = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${updatedAccessToken}`,
         },
       });
 
@@ -114,7 +115,7 @@ export const useCategoriesForm = () => {
       await axios.delete(`${API_DELETE}/${id}`, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${updatedAccessToken}`,
         },
       });
       fetchCetegories();
@@ -128,7 +129,7 @@ export const useCategoriesForm = () => {
       const response = await axios.get(`${API_GET}`, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${updatedAccessToken}`,
         },
       });
       const { name } = response.data;
@@ -142,21 +143,22 @@ export const useCategoriesForm = () => {
   //@ts-ignore
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
+    const accessTokenN = localStorage.getItem(`accessToken`);
     try {
-      const response = await axios.patch(`${API_PATCH}`, {
+      const response = await axios.patch(`${API_PATCH}`, categoryData, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: `Bearer ${accessTokenN}`,
         },
       });
       const { name } = response.data;
       setCategoryData({ name });
       await fetchCetegories();
+      router.push('/admin/categories/');
     } catch {
       return null;
     }
   }
-
 
   return {
     formData,

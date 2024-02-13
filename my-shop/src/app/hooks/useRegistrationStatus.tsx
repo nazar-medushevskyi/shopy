@@ -8,11 +8,11 @@ interface AuthResponse {
 export const useIsRegistered = () => {
   const [error, setError] = useState<string | null>(null);
   const [selectedShopId, setSelectedShopId] = useState(null);
+  const accessToken = localStorage.getItem(`accessToken`);
 
   useEffect(() => {
     const fetchIsRegistered = async () => {
       try {
-        const accessToken = localStorage.getItem(`accessToken`);
         const response = await fetch(`${CONFIG_URL}auth/me/`, {
           method: 'GET',
           headers: {

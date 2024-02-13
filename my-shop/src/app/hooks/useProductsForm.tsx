@@ -144,7 +144,7 @@ export const useProductsForm = () => {
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.patch(`${API_PATCH}`, {
+      const response = await axios.patch(`${API_PATCH}`, productData, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
@@ -153,6 +153,7 @@ export const useProductsForm = () => {
       const { name, description, price } = response.data;
       setProductData({ name, description, price });
       await fetchProducts();
+      router.push('/admin/products/')
     } catch {
       return null;
     }
