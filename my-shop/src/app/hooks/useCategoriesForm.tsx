@@ -17,14 +17,14 @@ export const useCategoriesForm = () => {
     id: '',
   });
 
-  const { selectedIdCategory } = useAppContext()
+  const { selectedIdCategory, handleTokenRefresh } = useAppContext()
   const [errors, setErrors] = useState({});
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [categories, setCategories] = useState<Categories[]>([]);
   const selectedShopId = useIsRegistered().selectedShopId;
   const [categoriesIdTake, setCategoriesTake] = useState(null)
   const updatedAccessToken = localStorage.getItem(`accessToken`);
-
+  const refreshToken = localStorage.getItem('refreshToken')
   const API = `${CONFIG_URL}shop/${selectedShopId}/categories/`
   const API_DELETE = `${CONFIG_URL}shop/${selectedShopId}/categories`
   const API_GET = `${CONFIG_URL}shop/${selectedShopId}/categories/${selectedIdCategory}/`
@@ -71,7 +71,30 @@ export const useCategoriesForm = () => {
         const responseData = await response.json();
         console.log(responseData.id);
         router.push('/admin/categories');
-      } else {
+      } else if (response.status === 401) {
+        const refreshSuccessful = await handleTokenRefresh();
+        if (refreshSuccessful) {
+          const newAccessToken = localStorage.getItem('accessToken');
+          const newResponse = await fetch(`${API}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+            body: JSON.stringify(formData),
+          });
+
+          if (newResponse.ok) {
+            const responseData = await response.json();
+            console.log(responseData.id);
+            router.push('/admin/categories');
+          }
+        } else {
+          console.error('Failed to refresh token');
+        }
+      }
+
+      else {
         console.log('not good query with post method');
 
         const errorData = await response.json();
@@ -101,6 +124,30 @@ export const useCategoriesForm = () => {
           id: result.id,
         }));
         setCategories(simplifiedCategories);
+      } else if (response.status === 401) {
+        const refreshSuccessful = await handleTokenRefresh();
+        if (refreshSuccessful) {
+          const newAccessToken = localStorage.getItem('accessToken');
+          const newResponse = await fetch(`${API}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+          });
+
+          if (newResponse.ok) {
+            const newResponseData = await newResponse.json();
+            setCategoriesTake(newResponseData.results[0].id);
+            const simplifiedCategories = newResponseData.results.map((result: any) => ({
+              name: result.name,
+              id: result.id,
+            }));
+            setCategories(simplifiedCategories);
+          } else {
+            console.error('Failed to fetch Categories with new token');
+          }
+        }
       } else {
         console.error('Failed to fetch Categories');
       }
@@ -108,6 +155,7 @@ export const useCategoriesForm = () => {
       console.error('Error fetching categories:', error);
     }
   };
+
 
   const handleDelete = async (id: number) => {
     try {
@@ -120,9 +168,22 @@ export const useCategoriesForm = () => {
       });
       fetchCetegories();
     } catch (error) {
-      console.error('Error deleting category:', error);
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        const refreshSuccessful = await handleTokenRefresh();
+        if (refreshSuccessful) {
+          const newAccessToken = localStorage.getItem('accessToken');
+          const newResponse = await axios.delete(`${API_DELETE}/${id}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+          });
+        }
+      } else {
+        console.error('Error deleting category:', error);
+      }
     }
-  }
+  };
 
   const handleGet = async () => {
     try {
@@ -132,10 +193,31 @@ export const useCategoriesForm = () => {
           Authorization: `Bearer ${updatedAccessToken}`,
         },
       });
-      const { name } = response.data;
-      setCategoryData({ name });
-      await fetchCetegories();
-    } catch {
+
+      if (response.status === 401) {
+        const refreshSuccessful = await handleTokenRefresh();
+        if (refreshSuccessful) {
+          const newAccessToken = localStorage.getItem('accessToken');
+          const newResponse = await axios.get(`${API_GET}`, {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+          });
+
+          if (newResponse.status === 200 || newResponse.status === 201) {
+            const { name } = response.data;
+            setCategoryData({ name });
+            await fetchCetegories();
+          }
+        }
+      } else {
+        const { name } = response.data;
+        setCategoryData({ name });
+        await fetchCetegories();
+      }
+    } catch (error) {
+      console.error('Error fetching category:', error);
       return null;
     }
   };
@@ -151,14 +233,37 @@ export const useCategoriesForm = () => {
           Authorization: `Bearer ${accessTokenN}`,
         },
       });
-      const { name } = response.data;
-      setCategoryData({ name });
-      await fetchCetegories();
-      router.push('/admin/categories/');
-    } catch {
+
+      if (response.status === 401) {
+        const refreshSuccessful = await handleTokenRefresh();
+        if (refreshSuccessful) {
+          const newAccessToken = localStorage.getItem('accessToken');
+          const newResponse = await axios.patch(`${API_PATCH}`, categoryData, {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${newAccessToken}`,
+            },
+          });
+
+          if (newResponse.status === 200 || newResponse.status === 201) {
+            const { name } = response.data;
+            setCategoryData({ name });
+            await fetchCetegories();
+            router.push('/admin/categories/');
+          }
+        }
+      } else {
+        const { name } = response.data;
+        setCategoryData({ name });
+        await fetchCetegories();
+        router.push('/admin/categories/');
+      }
+    } catch (error) {
+      console.error('Error submitting edited category:', error);
       return null;
     }
-  }
+  };
+
 
   return {
     formData,

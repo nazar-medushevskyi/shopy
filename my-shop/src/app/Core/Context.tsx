@@ -1,12 +1,14 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { CONFIG_URL } from '../helper/config';
+//@ts-ignore
+import axios from 'axios';
 
 interface AppContextType {
   selectedIdProduct: string | null;
   setSelectedIdProduct: React.Dispatch<React.SetStateAction<string | null>>;
   selectedIdCategory: string | null;
   setSelectedIdCategory: React.Dispatch<React.SetStateAction<string | null>>;
-  refreshAccessToken: () => Promise<string>;
+  handleTokenRefresh: () => Promise<string>;
 
 }
 
@@ -30,41 +32,37 @@ const AppProvider: React.FC = ({ children }) => {
     }
   }, [selectedIdCategory]);
 
-  const refreshAccessToken = async () => {
+  const handleTokenRefresh = async () => {
+    const refreshEndpoint = `${CONFIG_URL}auth/token/refresh/`;
     try {
       const refreshToken = localStorage.getItem('refreshToken');
-
-      const response = await fetch(`${CONFIG_URL}auth/token/refresh/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${refreshToken}`,
-        },
+  
+      if (!refreshToken) {
+        console.error('Рефреш токен не найден');
+        return false;
+      }
+  
+      const response = await axios.post(refreshEndpoint, {
+        refresh: refreshToken,
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to refresh token');
+  
+      if (response.status === 200) {
+        localStorage.setItem('accessToken', response.data.access);
+        return true;
       }
-
-      const responseData = await response.json();
-      const newToken = responseData.access;
-      if (newToken !== undefined) {
-        localStorage.setItem('accessToken', newToken);
-      }
-
-      return newToken;
     } catch (error) {
-      console.error('Error refreshing token:', error);
-      throw error;
+      console.error('Ошибка во время обновления токена:', error);
+      return false; 
     }
   };
+  
 
   const contextValue = {
     selectedIdProduct,
     setSelectedIdProduct,
     selectedIdCategory,
     setSelectedIdCategory,
-    refreshAccessToken
+    handleTokenRefresh
   };
 
   return (

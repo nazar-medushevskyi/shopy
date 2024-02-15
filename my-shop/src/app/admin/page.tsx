@@ -1,6 +1,7 @@
 'use client'
 //@ts-ignore
 import { useRouter } from 'next/navigation'
+import { useAppContext } from '../Core/Context';
 import { AdminHeader } from '../Components/AdminHeader';
 import { useEffect, useState } from 'react';
 import { GeneralRegistration } from '../Components/GeneralRegistration';
@@ -25,6 +26,14 @@ const Admin = () => {
       }
     }
   }, [isRegistered]);
+
+  const { handleTokenRefresh } = useAppContext()
+
+  useEffect(() => {
+    handleTokenRefresh();
+  }, [])
+
+  console.log(`refreshFunc: ${handleTokenRefresh()}`)
 
   return (
     <>
