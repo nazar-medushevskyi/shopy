@@ -35,8 +35,6 @@ export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> =
   const linkCategory = `categories/${category?.id}/`
   const linkProduct = `products/${product?.id}/`
 
-
-
   return (
     <>
       <div className="adminCategoriesBlock">

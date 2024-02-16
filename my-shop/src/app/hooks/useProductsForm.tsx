@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react';
-import axios from '../../../node_modules/axios/index';
 import { CONFIG_URL } from '../helper/config';
 import { useAppContext } from '../Core/Context';
 import { useIsRegistered } from './useRegistrationStatus';
@@ -24,7 +23,6 @@ export const useProductsForm = () => {
       description: '',
       price: '',
       id: '',
-
     });
 
   const [productData, setProductData] = useState({
@@ -39,11 +37,11 @@ export const useProductsForm = () => {
   const [products, setProducts] = useState<Products[]>([]);
   const selectedShopId = useIsRegistered().selectedShopId;
   const [productIdTake, setProductIdTake] = useState(null)
-  const { selectedIdProduct } = useAppContext()
-  const API = `${CONFIG_URL}shop/${selectedShopId}/products/`
-  const API_DELETE = `${CONFIG_URL}shop/${selectedShopId}/products`
-  const API_GET = `${CONFIG_URL}shop/${selectedShopId}/products/${selectedIdProduct}/`
-  const API_PATCH = `${CONFIG_URL}shop/${selectedShopId}/products/${selectedIdProduct}/`
+  const { selectedIdProduct, axiosInstance } = useAppContext()
+  const API = `shop/${selectedShopId}/products/`
+  const API_DELETE = `shop/${selectedShopId}/products`
+  const API_GET = `shop/${selectedShopId}/products/${selectedIdProduct}/`
+  const API_PATCH = `shop/${selectedShopId}/products/${selectedIdProduct}/`
 
 
 
@@ -65,68 +63,58 @@ export const useProductsForm = () => {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-
+  
     setErrorMessages([]);
-
+  
     try {
-      const response = await fetch(`${CONFIG_URL}shop/${selectedShopId}/products/`, {
-        method: 'POST',
+      const response = await axiosInstance.post(`${API}`, formData, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(formData),
       });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        console.log(responseData.id);
-        router.push('/admin/products');
-      } else {
-        console.log('not good query with post method');
-
-        const errorData = await response.json();
-        setErrors(errorData);
-        console.error('Server error:', errorData);
-      }
+  
+      const responseData = response.data;
+      console.log(responseData.id);
+      router.push('/admin/products');
+  
     } catch (error) {
-
+      console.error('Error during form submission:', error);
     }
   };
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch(`${API}`, {
-        method: 'GET',
+      const response = await axiosInstance.get(`${API}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        setProductIdTake(responseData.results[0].id)
-        const simplifiedProducts = responseData.results.map((result: any) => ({
-          name: result.name,
-          description: result.description,
-          price: result.price,
-          id: result.id,
-        }));
-        setProducts(simplifiedProducts);
-      } else {
-        console.error('Failed to fetch products');
-      }
+  
+      const responseData = response.data;
+      setProductIdTake(responseData.results[0].id);
+  
+      const simplifiedProducts = responseData.results.map((result: any) => ({
+        name: result.name,
+        description: result.description,
+        price: result.price,
+        id: result.id,
+      }));
+  
+      setProducts(simplifiedProducts);
+      
     } catch (error) {
       console.error('Error fetching products:', error);
     }
   };
+  
 
   //@ts-ignore
 
   const handleGet = async () => {
     try {
-      const response = await axios.get(`${API_GET}`, {
+      const response = await axiosInstance.get(`${API_GET}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
@@ -144,7 +132,7 @@ export const useProductsForm = () => {
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.patch(`${API_PATCH}`, productData, {
+      const response = await axiosInstance.patch(`${API_PATCH}`, productData, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
@@ -162,7 +150,7 @@ export const useProductsForm = () => {
   const handleDelete = async (id: number) => {
     try {
       console.log('Deleting product with ID:', id);
-      await axios.delete(`${API_DELETE}/${id}`, {
+      await axiosInstance.delete(`${API_DELETE}/${id}`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
@@ -175,20 +163,20 @@ export const useProductsForm = () => {
     }
   }
 
-
   return {
     formData,
+    errors,
+    errorMessages,
+    products,
+    productIdTake,
+    productData,
+
+    handleChange,
+    handleSubmit,
     handleGet,
     handleSubmitEdit,
     handleDelete,
-    errors,
-    errorMessages,
-    handleChange,
-    handleSubmit,
-    products,
-    productIdTake,
     fetchProducts,
     handleChangeEdit,
-    productData,
   };
 };

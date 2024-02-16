@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAppContext } from '../Core/Context';
 import { CONFIG_URL } from '../helper/config';
 
 interface AuthResponse {
@@ -6,33 +7,30 @@ interface AuthResponse {
 }
 
 export const useIsRegistered = () => {
+  const { axiosInstance } = useAppContext()
   const [error, setError] = useState<string | null>(null);
   const [selectedShopId, setSelectedShopId] = useState(null);
   const accessToken = localStorage.getItem(`accessToken`);
+  const ApiAuth = 'auth/me/';
 
   useEffect(() => {
     const fetchIsRegistered = async () => {
       try {
-        const response = await fetch(`${CONFIG_URL}auth/me/`, {
-          method: 'GET',
+        const response = await axiosInstance.get(`${ApiAuth}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${accessToken}`
           },
         });
-
-        if (response.ok) {
-          const responseData: AuthResponse = await response.json();
-          //@ts-ignore
-          setSelectedShopId(responseData.shops[0].id)
-        } else {
-          const errorData = await response.json();
-          setError(`Failed to fetch is_registered: ${errorData.message}`);
-        }
+    
+        //@ts-ignore
+        setSelectedShopId(response.data.shops[0].id);
+    
       } catch (error) {
-        setError(`Error during is_registered fetch`);
+        setError(`Error during is_registered fetch: ${error}`);
       }
     };
+    
 
     fetchIsRegistered();
   }, []);

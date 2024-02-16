@@ -9,7 +9,7 @@ interface AppContextType {
   selectedIdCategory: string | null;
   setSelectedIdCategory: React.Dispatch<React.SetStateAction<string | null>>;
   handleTokenRefresh: () => Promise<string>;
-
+  axiosInstance: typeof axios;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -55,17 +55,48 @@ const AppProvider: React.FC = ({ children }) => {
       return false; 
     }
   };
+
+
+  const axiosInstance = (baseURL: string) => {
+    const instance = axios.create({
+      baseURL,
+    });
+  
+    instance.interceptors.response.use(
+      (response: any) => {
+        return response;
+      },
+      async (error: { response: { status: number }; config: any }) => {
+        if (error.response && error.response.status === 401) {
+          const refreshSuccessful = await handleTokenRefresh();
+          if (refreshSuccessful) {
+            const newAccessToken = localStorage.getItem('accessToken');
+            const config = error.config;
+            config.headers.Authorization = `Bearer ${newAccessToken}`;
+            return instance(config);
+          } else {
+            console.error('Failed to refresh token');
+          }
+        }
+        return Promise.reject(error);
+      }
+    );
+  
+    return instance;
+  };
   
 
   const contextValue = {
     selectedIdProduct,
-    setSelectedIdProduct,
     selectedIdCategory,
+    axiosInstance: axiosInstance(CONFIG_URL),
     setSelectedIdCategory,
-    handleTokenRefresh
+    handleTokenRefresh,
+    setSelectedIdProduct,
   };
 
   return (
+    //@ts-ignore
     <AppContext.Provider value={contextValue}>
       {children}
     </AppContext.Provider>

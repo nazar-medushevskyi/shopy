@@ -1,5 +1,5 @@
 import { useIsRegistered } from './useRegistrationStatus';
-import { CONFIG_URL } from '../helper/config';
+import { useAppContext } from '../Core/Context';
 import { useEffect, useState } from 'react';
 
 //@ts-ignore
@@ -11,27 +11,27 @@ interface ShopData {
 }
 
 export const useShopDetails = () => {
+  const { axiosInstance } = useAppContext()
   const router = useRouter();
   const [shopDetails, setShopDetails] = useState<ShopData | null>(null);
   const [formData, setFormData] = useState<ShopData>({ name: '', subdomain_name: '' });
   const selectedShopId = useIsRegistered().selectedShopId;
+  const ApiShop = `shop/${selectedShopId}/`;
+  const accessToken = localStorage.getItem('accessToken');
+
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
 
     const fetchShopDetails = async () => {
       try {
-        const response = await fetch(`${CONFIG_URL}shop/${selectedShopId}/`, {
+        const response = await axiosInstance.get(`${ApiShop}`, {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${accessToken}`
           },
         });
-        if (!response.ok) {
-          throw new Error('Failed to fetch shop details');
-        }
 
-        const shopData: ShopData = await response.json();
+        const shopData: ShopData = response.data;
         setShopDetails(shopData);
         setFormData(shopData);
 
@@ -39,6 +39,7 @@ export const useShopDetails = () => {
         console.error('Error fetching shop details:', error);
       }
     };
+
 
     fetchShopDetails();
   }, [selectedShopId]);
@@ -53,26 +54,17 @@ export const useShopDetails = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const accessToken = localStorage.getItem('accessToken');
 
     try {
-      const response = await fetch(`${CONFIG_URL}shop/${selectedShopId}/`, {
-        method: 'PATCH',
+      const response = await axiosInstance.patch(`${ApiShop}`, formData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${accessToken}`
         },
-        body: JSON.stringify(formData),
       });
-      if (!response.ok) {
-        throw new Error('Failed to update shop details');
-      }
 
-      if (response.ok) {
-        router.push('/admin/')        
-      }
-
-      const updatedShopData: ShopData = await response.json();
+      router.push('/admin/')
+      const updatedShopData: ShopData = response.data;
       setShopDetails(updatedShopData);
 
     } catch (error) {
@@ -80,5 +72,11 @@ export const useShopDetails = () => {
     }
   };
 
-  return { shopDetails, formData, handleChange, handleSubmit };
+  return {
+    shopDetails,
+    formData,
+
+    handleChange,
+    handleSubmit
+  };
 };

@@ -27,8 +27,6 @@ export const AdminHeader = () => {
   const products = `${CONFIG_ADMIN}products`;
   const orders = `${CONFIG_ADMIN}orders`
 
-  const pagesLinks = [generalLink, categories, products, orders]
-
   const data = {
     categories: [
       { id: 1, name: 'General', image: '/images/category/settings.svg', defaultImage: '/images/category/default.svg', link: generalLink },
@@ -57,7 +55,6 @@ export const AdminHeader = () => {
         </a>
       </header>
 
-
       <div className="menu" id="menu">
         <div className="menu__top">
           <Image
@@ -67,10 +64,9 @@ export const AdminHeader = () => {
             height={50}
             alt="Picture of the author"
           />
+
           <a href="#home">
-
             <CloseButton size='lg' />
-
           </a>
         </div>
 
