@@ -5,7 +5,6 @@ interface AdminInputNameProps {
   name: string;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   formData: { name: string; };
-
 }
 
 export const AdminInputName: React.FC<AdminInputNameProps> = (

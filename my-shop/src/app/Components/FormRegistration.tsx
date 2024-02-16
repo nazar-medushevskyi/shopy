@@ -2,18 +2,15 @@
 //@ts-ignore
 import { usePathname } from 'next/navigation'
 //@ts-ignore
-import dynamic from 'next/dynamic';
 import { HeadingComponent } from './Heading';
 import { ButtonRegistration } from './ButtonRegistration';
 import { useFormData } from '../hooks/useFormData';
 //@ts-ignore
-import { Icon, Input, Button, InputGroup, InputRightElement, Text, Heading } from '@chakra-ui/react';
+import { Icon, Input, Button, InputGroup, InputRightElement, Text } from '@chakra-ui/react';
 //@ts-ignore
 import { MdVisibility as ViewIcon, MdVisibilityOff as ViewOffIcon } from 'react-icons/md';
 import '../main.scss';
 //@ts-ignore
-const useRouter = dynamic(() => import('next/router'), { ssr: false });
-
 
 interface FormInputProps {
   title: string;
@@ -30,7 +27,6 @@ export const FormInput: React.FC<FormInputProps> = (
     password,
     description,
     isFormInvalid
-
   }
 ) => {
 
@@ -41,7 +37,6 @@ export const FormInput: React.FC<FormInputProps> = (
 
   const registrationForm = useFormData('registration');
   const loginForm = useFormData('login');
-
 
   const {
     handleChange,
@@ -68,6 +63,7 @@ export const FormInput: React.FC<FormInputProps> = (
           isInvalid={errors.email || isFormInvalid}
           errorBorderColor='crimson'
         />
+
         {errors.email && (
           <p className='error-message'>
             {errorMessages.map((message, index) => (
@@ -75,6 +71,7 @@ export const FormInput: React.FC<FormInputProps> = (
             ))}
           </p>
         )}
+
         <InputGroup size='md' variant='filled'>
           <Input
             className={`input-bg-color ${errors.password || isFormInvalid ? 'isInvalid' : ''}`}
@@ -88,12 +85,14 @@ export const FormInput: React.FC<FormInputProps> = (
             placeholder={password}
           />
           <InputRightElement width='4.5rem'>
+
             <Button h='1.75rem' size='sm' onClick={handleClick}>
               {show ? <Icon as={ViewIcon} /> : <Icon as={ViewOffIcon} />}
-
             </Button>
+
           </InputRightElement>
         </InputGroup>
+        
         {errors.password && (
           <p className='error-message'>
             {errorMessages.map((message, index) => (

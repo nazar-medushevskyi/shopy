@@ -21,7 +21,6 @@ const Productss = () => {
     fetchProducts();
   }, [selectedIdProduct]);
 
-
   return (
     <>
       <Box className='adminPagesBox categoriesBox '>

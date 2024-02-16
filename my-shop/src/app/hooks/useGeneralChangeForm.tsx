@@ -19,9 +19,7 @@ export const useShopDetails = () => {
   const ApiShop = `shop/${selectedShopId}/`;
   const accessToken = localStorage.getItem('accessToken');
 
-
   useEffect(() => {
-
     const fetchShopDetails = async () => {
       try {
         const response = await axiosInstance.get(`${ApiShop}`, {
@@ -39,8 +37,7 @@ export const useShopDetails = () => {
         console.error('Error fetching shop details:', error);
       }
     };
-
-
+    
     fetchShopDetails();
   }, [selectedShopId]);
 

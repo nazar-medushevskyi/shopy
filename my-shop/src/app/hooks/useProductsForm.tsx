@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react';
-import { CONFIG_URL } from '../helper/config';
 import { useAppContext } from '../Core/Context';
 import { useIsRegistered } from './useRegistrationStatus';
 import { Products } from '../typesProduct';
@@ -36,14 +35,12 @@ export const useProductsForm = () => {
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [products, setProducts] = useState<Products[]>([]);
   const selectedShopId = useIsRegistered().selectedShopId;
-  const [productIdTake, setProductIdTake] = useState(null)
-  const { selectedIdProduct, axiosInstance } = useAppContext()
-  const API = `shop/${selectedShopId}/products/`
-  const API_DELETE = `shop/${selectedShopId}/products`
-  const API_GET = `shop/${selectedShopId}/products/${selectedIdProduct}/`
-  const API_PATCH = `shop/${selectedShopId}/products/${selectedIdProduct}/`
-
-
+  const [productIdTake, setProductIdTake] = useState(null);
+  const { selectedIdProduct, axiosInstance } = useAppContext();
+  const API = `shop/${selectedShopId}/products/`;
+  const API_DELETE = `shop/${selectedShopId}/products`;
+  const API_GET = `shop/${selectedShopId}/products/${selectedIdProduct}/`;
+  const API_PATCH = `shop/${selectedShopId}/products/${selectedIdProduct}/`;
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setFormData({
@@ -59,7 +56,6 @@ export const useProductsForm = () => {
       [name]: value,
     }));
   };
-
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
@@ -108,10 +104,8 @@ export const useProductsForm = () => {
       console.error('Error fetching products:', error);
     }
   };
-  
 
   //@ts-ignore
-
   const handleGet = async () => {
     try {
       const response = await axiosInstance.get(`${API_GET}`, {

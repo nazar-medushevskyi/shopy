@@ -11,7 +11,7 @@ import { useEffect } from 'react'
 
 const Orders = () => {
 
-  const { fetchOrders, ordersIdTake } = useOrders()
+  const { fetchOrders } = useOrders()
 
   useEffect(() => {
     fetchOrders()

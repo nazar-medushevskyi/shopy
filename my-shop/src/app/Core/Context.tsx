@@ -56,7 +56,6 @@ const AppProvider: React.FC = ({ children }) => {
     }
   };
 
-
   const axiosInstance = (baseURL: string) => {
     const instance = axios.create({
       baseURL,
@@ -85,7 +84,6 @@ const AppProvider: React.FC = ({ children }) => {
     return instance;
   };
   
-
   const contextValue = {
     selectedIdProduct,
     selectedIdCategory,

@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useAppContext } from '../Core/Context';
-import { CONFIG_URL } from '../helper/config';
 import { useIsRegistered } from './useRegistrationStatus';
 import { Categories } from '../typesCategory';
 import { useRouter } from '../../../node_modules/next/navigation';
@@ -28,7 +27,6 @@ export const useCategoriesForm = () => {
   const API_DELETE = `shop/${selectedShopId}/categories`
   const API_GET = `shop/${selectedShopId}/categories/${selectedIdCategory}/`
   const API_PATCH = `shop/${selectedShopId}/categories/${selectedIdCategory}/`
-
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setFormData({
@@ -103,7 +101,9 @@ export const useCategoriesForm = () => {
           Authorization: `Bearer ${updatedAccessToken}`,
         },
       });
+  
       fetchCetegories();
+
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 401) {
         const refreshSuccessful = await handleTokenRefresh();

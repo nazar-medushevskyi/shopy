@@ -6,7 +6,7 @@ import Link from 'next/link'
 import '../main.scss';
 //@ts-ignore
 import { HamburgerIcon } from '@chakra-ui/icons';
-import { SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const AdminHeader = () => {
   const [currentPath, setCurrentPath] = useState('');
@@ -14,7 +14,6 @@ export const AdminHeader = () => {
   useEffect(() => {
     setCurrentPath(window.location.pathname);
   }, []);
-
 
   const isActive = (link: string) => {
     return currentPath.startsWith(link);
@@ -48,6 +47,7 @@ export const AdminHeader = () => {
             alt="Picture of the author"
           />
         </div>
+
         <a className='menu-container-burger' href="#menu">
           <button type="button" aria-label="Close" className="css-172cj4q">
             <HamburgerIcon className='menu-burger' boxSize={6} />
@@ -71,6 +71,7 @@ export const AdminHeader = () => {
         </div>
 
         <div className="menu-container">
+
           {data.categories.map((category) => (
             <Link key={category.id} href={category.link}>
               <Button
@@ -78,6 +79,7 @@ export const AdminHeader = () => {
                 className={`menu-button-content ${isActive(category.link) ? 'active-adminPage-link' : ''}`}
                 size='lg'
               >
+
                 <div className="menu-button-container">
                   {isActive(category.link) ? (
                     <Image
@@ -96,6 +98,7 @@ export const AdminHeader = () => {
                       alt="Picture of the author"
                     />
                   )}
+                  
                   <Text
                     className={`menu-button-container__text ${isActive(category.link) ? 'active-adminPageText' : ''}`}
                   >

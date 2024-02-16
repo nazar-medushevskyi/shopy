@@ -17,7 +17,6 @@ interface LoginFormData {
 export const useGeneralForm = () => {
   const accessToken = localStorage.getItem(`accessToken`);
 
-
   const [formData, setFormData] = useState<LoginFormData>({
     name: '',
     subdomain_name: '',
@@ -58,7 +57,6 @@ export const useGeneralForm = () => {
     }
   };
   
-
   return {
     formData,
     errors,

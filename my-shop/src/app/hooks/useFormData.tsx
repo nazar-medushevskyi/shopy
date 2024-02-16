@@ -27,6 +27,7 @@ export const useFormData = (formType: 'registration' | 'login') => {
     first_name: 'string',
     last_name: 'string',
   });
+
   const { handleTokenRefresh } = useAppContext();
   const [errors, setErrors] = useState<Errors>({});
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
@@ -69,7 +70,9 @@ export const useFormData = (formType: 'registration' | 'login') => {
           localStorage.setItem('accessToken', accessToken);
           localStorage.setItem('refreshToken', refreshToken);
           router.push('/admin');
-        } else if (formType === 'login') {
+        } 
+        
+        else if (formType === 'login') {
           console.log('User logged in successfully');
           const token = response.data.access;
           const refreshToken = response.data.refresh

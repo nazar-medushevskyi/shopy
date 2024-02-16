@@ -4,8 +4,6 @@ import Link from '../../../node_modules/next/link';
 //@ts-ignore
 import { Text, Image } from '@chakra-ui/react';
 import { Categories } from '../typesCategory';
-import { useEffect } from 'react';
-
 
 interface AdminCategoriesComponentProps {
   title: string;
@@ -17,7 +15,6 @@ interface AdminCategoriesComponentProps {
   onckickModal?: () => void;
 }
 
-
 export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> = ({
   product,
   category,
@@ -25,7 +22,6 @@ export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> =
   title,
   handleDeleteProduct,
   handleDeleteCategory,
-
   onckickModal,
 
 }) => {
@@ -97,7 +93,6 @@ export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> =
         </div>
         <div className="adminCategoriesBlock-line" />
       </div>
-
     </>
   )
 }

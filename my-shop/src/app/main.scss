@@ -11,10 +11,10 @@
 .input-bg-color-general {
   max-width: 500px !important;
   height: 60px !important;
-}
 
-.input-bg-color-general::placeholder {
-  font-size: 18px;
+  &::placeholder {
+    font-size: 18px;
+  }
 }
 
 .container-form {
@@ -81,7 +81,6 @@
   top: 13% !important;
 }
 
-
 .menu-container {
   max-width: 765px !important;
   margin: 80px auto !important;
@@ -100,35 +99,6 @@
     background-color: #805ad5;
   }
 }
-
-// .menu-button-content::before,
-// .menu-button-content::after {
-//   content: "";
-//   position: absolute;
-//   top: 0;
-//   bottom: 0;
-//   transition: width 0.3s ease-in-out;
-//   background-color: #805ad5;
-//   z-index: -1;
-// }
-
-// .menu-button-content::before {
-//   left: 0;
-//   width: 0;
-// }
-
-// .menu-button-content::after {
-//   right: 0;
-//   width: 0;
-// }
-
-// .menu-button-content:hover::before {
-//   width: 100%;
-// }
-
-// .menu-button-content:hover::after {
-//   width: 100%;
-// }
 
 .menu-button-content:hover .menu-button-container__text {
   color: white !important;
@@ -165,7 +135,6 @@
   height: 48px !important;
 }
 
-
 .admin-header {
   max-width: 765px;
   margin: 20px auto 80px auto;
@@ -182,7 +151,6 @@
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s, visibility 0.3s;
-  /* Transition opacity and visibility */
   box-sizing: border-box;
   height: 100vh;
   background: #fff;

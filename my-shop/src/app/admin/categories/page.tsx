@@ -23,8 +23,8 @@ const CategoriesPage = () => {
   return (
     <>
       <Box className='adminPagesBox categoriesBox '>
+        
         <AdminHeader />
-
 
         {categories && categories.map((category: Categories) => (
           <AdminCategoriesComponent

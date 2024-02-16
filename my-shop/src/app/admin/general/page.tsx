@@ -1,6 +1,5 @@
 'use client'
 import { AdminHeader } from '../../Components/AdminHeader';
-import { HeadingComponent } from '@/app/Components/Heading';
 import { InputComponent } from '@/app/Components/InputComponent';
 import { ButtonSave } from '@/app/Components/ButtonSave';
 //@ts-ignore
@@ -19,7 +18,6 @@ const General = () => {
     <>
       <AdminHeader />
       <Box className='container-form adminPagesBox'>
-        {/* <HeadingComponent title={'General'} /> */}
 
         <form className='form-container-adminGeneral' onSubmit={handleSubmit}>
           <InputComponent

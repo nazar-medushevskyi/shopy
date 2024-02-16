@@ -3,16 +3,10 @@ import { AdminHeader } from './AdminHeader';
 import { InputComponent } from './InputComponent';
 import { ButtonRegistration } from './ButtonRegistration';
 //@ts-ignore
-import { Heading, Box, Input, InputGroup, Button, Select, InputRightAddon } from '@chakra-ui/react';
+import { Heading, Box, Select } from '@chakra-ui/react';
 import { useGeneralForm } from '../hooks/useGeneralForm';
 import '../main.scss';
-//@ts-ignore
-import { HamburgerIcon } from '@chakra-ui/icons';
 import { useIsRegistered } from '../hooks/useRegistrationStatus';
-
-
-//@ts-ignore
-import { HamburgerIcon as BurgerIcon } from 'react-icons/md';
 import { useEffect, useState } from 'react';
 
 interface GeenralInfoProps {
@@ -27,7 +21,6 @@ export const GeneralRegistration: React.FC<GeenralInfoProps> = (
   { title,
     storName,
     storNameEmailShopy,
-    currency,
     btnText,
   }) => {
 

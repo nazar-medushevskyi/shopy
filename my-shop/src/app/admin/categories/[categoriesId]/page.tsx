@@ -24,7 +24,9 @@ const CategoryPageEdit = () => {
       <AdminHeader />
 
       <Box className='container-form adminPagesBox'>
+        
         ID: {selectedIdCategory}
+
         <form className='form-container-adminGeneral' onSubmit={handleSubmitEdit}>
           <AdminInputName
             name={categoryData.name}

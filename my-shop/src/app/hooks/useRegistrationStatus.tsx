@@ -1,10 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useAppContext } from '../Core/Context';
-import { CONFIG_URL } from '../helper/config';
-
-interface AuthResponse {
-  is_registered: boolean;
-}
 
 export const useIsRegistered = () => {
   const { axiosInstance } = useAppContext()
@@ -31,7 +26,6 @@ export const useIsRegistered = () => {
       }
     };
     
-
     fetchIsRegistered();
   }, []);
 

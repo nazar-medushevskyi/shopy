@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useAppContext } from '../Core/Context';
-import { CONFIG_URL } from '../helper/config';
 import { useIsRegistered } from './useRegistrationStatus';
 
 export const useOrders = () => {
@@ -21,7 +20,7 @@ export const useOrders = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      
+
         const responseData = await response.json();
         setOrdersIdTake(responseData.results[0].id)
         const simplifiedCategories = responseData.results.map((result: any) => ({
