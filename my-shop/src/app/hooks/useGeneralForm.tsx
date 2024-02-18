@@ -1,5 +1,7 @@
+import { useFormData } from './useFormData';
 import { useState } from 'react';
 import { useAppContext } from '../Core/Context';
+
 
 interface Errors {
   name?: string[];
@@ -22,6 +24,8 @@ export const useGeneralForm = () => {
     subdomain_name: '',
     currency: 'USD',
   });
+
+  const { handleShopId } = useFormData('registration')
 
   const { axiosInstance } = useAppContext()
   const [errors, setErrors] = useState<Errors>({});
@@ -51,6 +55,7 @@ export const useGeneralForm = () => {
       });
   
       setAdminPage(true);
+      handleShopId();
   
     } catch (error) {
       console.error('Error during login:', error);

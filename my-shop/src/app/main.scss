@@ -137,10 +137,16 @@
 
 .admin-header {
   max-width: 765px;
+  background-color: #fff;
+  z-index: 999;
   margin: 20px auto 80px auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .menu {
@@ -216,14 +222,13 @@
 }
 
 .adminPagesBox {
-  min-height: 80vh;
-
+  min-height: 70vh;
+  margin: 120px auto;
 }
 
 .categoriesBox {
   position: relative;
   max-width: 772px;
-  margin: 0 auto;
 }
 
 .css-k0waxj {
@@ -242,6 +247,13 @@
 
 .btnSaveModal {
   max-width: 400px !important;
+}
+
+.spinnetContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 @media (max-width: 732px) {

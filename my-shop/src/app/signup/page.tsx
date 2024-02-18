@@ -7,12 +7,13 @@ import { Box, Text } from '@chakra-ui/react';
 import { FormInput } from '../Components/FormRegistration';
 import Link from '../../../node_modules/next/link';
 import { useEffect } from 'react';
-import { useIsRegistered } from '../hooks/useRegistrationStatus';
 
 const Create = () => {
   const router = useRouter()
 
-  const isRegistered = useIsRegistered().selectedShopId;
+  const selectedShopId = localStorage.getItem(`storeId`)
+
+  const isRegistered = selectedShopId;
 
   useEffect(() => {
     if (isRegistered !== null && isRegistered) {

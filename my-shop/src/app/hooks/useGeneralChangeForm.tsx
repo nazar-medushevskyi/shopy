@@ -1,4 +1,3 @@
-import { useIsRegistered } from './useRegistrationStatus';
 import { useAppContext } from '../Core/Context';
 import { useEffect, useState } from 'react';
 
@@ -11,11 +10,11 @@ interface ShopData {
 }
 
 export const useShopDetails = () => {
+  const selectedShopId  = localStorage.getItem(`storeId`)
   const { axiosInstance } = useAppContext()
   const router = useRouter();
   const [shopDetails, setShopDetails] = useState<ShopData | null>(null);
   const [formData, setFormData] = useState<ShopData>({ name: '', subdomain_name: '' });
-  const selectedShopId = useIsRegistered().selectedShopId;
   const ApiShop = `shop/${selectedShopId}/`;
   const accessToken = localStorage.getItem('accessToken');
 

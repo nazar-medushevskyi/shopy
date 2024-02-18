@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAppContext } from '../Core/Context';
 //@ts-ignore
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 //@ts-ignore
 import { useRouter } from 'next/navigation';
 import { CONFIG_URL } from '../helper/config';
@@ -28,11 +28,29 @@ export const useFormData = (formType: 'registration' | 'login') => {
     last_name: 'string',
   });
 
-  const { handleTokenRefresh } = useAppContext();
+  const { axiosInstance } = useAppContext();
   const [errors, setErrors] = useState<Errors>({});
+  const ApiAuth = 'auth/me/';
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [show, setShow] = useState(false);
   const [isFormInvalid, setIsFormInvalid] = useState(false);
+
+  const handleShopId = async () => {
+    try {
+      const response = await axiosInstance.get(`${ApiAuth}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem(`accessToken`)}`,
+        },
+      });
+
+      const IdStoreItem = response.data.shops[0].id;
+      localStorage.setItem('storeId', IdStoreItem);
+
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setFormData({
@@ -46,7 +64,7 @@ export const useFormData = (formType: 'registration' | 'login') => {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setErrorMessages([]);
-
+  
     try {
       let endpoint = '';
       if (formType === 'registration') {
@@ -54,48 +72,54 @@ export const useFormData = (formType: 'registration' | 'login') => {
       } else if (formType === 'login') {
         endpoint = `${CONFIG_URL}auth/token/`;
       }
-
-      const response = await axios.post(endpoint, formData, {
+  
+      const response = await axiosInstance.post(endpoint, formData, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-
-      if (response.status === 200) {
+  
+      const responseData = response.data;
+      console.log(responseData);
+  
+      console.log(Object.keys(responseData));
+  
+      if (response.status === 200 || response.status === 201) {
         if (formType === 'registration') {
           console.log('User registered successfully');
-          const accessToken = response.data.access;
-          const refreshToken = response.data.refresh
-          console.log('Token received successfully:', accessToken);
-          localStorage.setItem('accessToken', accessToken);
-          localStorage.setItem('refreshToken', refreshToken);
-          router.push('/admin');
-        } 
-        
-        else if (formType === 'login') {
+          const tokenResponse = await axios.post(`${CONFIG_URL}auth/token/`, {
+            email: formData.email,
+            password: formData.password,
+          });
+  
+          if (tokenResponse.status === 200 || tokenResponse.status === 201) {
+            const tokenData = tokenResponse.data;
+            console.log('Token received successfully:', tokenData);
+            const accessToken = tokenData.access;
+            const refreshToken = tokenData.refresh;
+            console.log('Access token:', accessToken);
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+            handleShopId()
+            router.push('/admin');
+          } else {
+            console.error('Token retrieval failed');
+          }
+        } else if (formType === 'login') {
           console.log('User logged in successfully');
-          const token = response.data.access;
-          const refreshToken = response.data.refresh
-          localStorage.setItem('refreshToken', refreshToken);
+          const token = responseData.access;
+          const refreshToken = responseData.refresh;
           localStorage.setItem('accessToken', token);
+          localStorage.setItem('refreshToken', refreshToken);
+          handleShopId()
           router.push('/admin');
-          console.log(response.data);
         }
       }
     } catch (error) {
       console.error(`Error during ${formType}:`, error);
-      if (axios.isAxiosError(error)) {
-        const axiosError: AxiosError = error;
-        if (axiosError.response?.status === 401) {
-          const refreshSuccessful = await handleTokenRefresh();
-          if (refreshSuccessful) {
-            await handleSubmit(e);
-          }
-        }
-      }
     }
   };
-
+  
   return {
     formData,
     errors,
@@ -105,5 +129,6 @@ export const useFormData = (formType: 'registration' | 'login') => {
     handleChange,
     handleClick,
     handleSubmit,
+    handleShopId,
   };
 };

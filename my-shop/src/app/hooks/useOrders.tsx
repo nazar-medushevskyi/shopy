@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { useAppContext } from '../Core/Context';
-import { useIsRegistered } from './useRegistrationStatus';
 
 export const useOrders = () => {
+  const selectedShopId = localStorage.getItem(`storeId`)
   const { axiosInstance } = useAppContext()
+  const [ordersDetails, setOrdersDetails] = useState(null)
   const accessToken = localStorage.getItem(`accessToken`);
-  const selectedShopId = useIsRegistered().selectedShopId;
   const [ordersIdTake, setOrdersIdTake] = useState(null)
 
   const API = `shop/${selectedShopId}/orders/`
@@ -20,15 +20,16 @@ export const useOrders = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
-        const responseData = await response.json();
-        setOrdersIdTake(responseData.results[0].id)
-        const simplifiedCategories = responseData.results.map((result: any) => ({
-          products: result.products,
-          id: result.id,
-        }));
-        setOrdersIdTake(simplifiedCategories);
-
+  
+      const responseData = response.data;
+      setOrdersDetails(responseData)
+      setOrdersIdTake(responseData.results[0].id);
+      const simplifiedCategories = responseData.results.map((result: any) => ({
+        products: result.products,
+        id: result.id,
+      }));
+      setOrdersIdTake(simplifiedCategories);
+  
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
@@ -37,5 +38,6 @@ export const useOrders = () => {
   return {
     fetchOrders,
     ordersIdTake,
+    ordersDetails,
   };
 };

@@ -6,16 +6,17 @@ import { useRouter } from 'next/navigation'
 import { Box, Text } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { FormInput } from '../Components/FormRegistration';
-import { useIsRegistered } from '../hooks/useRegistrationStatus';
 
 const Login = () => {
   const router = useRouter();
 
-  const isRegistered = useIsRegistered().selectedShopId;
+const selectedShopId = localStorage.getItem(`storeId`)
+
+  const isRegistered = selectedShopId;
 
   useEffect(() => {
     console.log(isRegistered)
-    if (isRegistered === true) {
+    if (isRegistered) {
       if (!window.location.pathname.startsWith('/admin')) {
         router.push('/admin');
       }

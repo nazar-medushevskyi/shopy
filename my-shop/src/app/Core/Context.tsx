@@ -1,5 +1,8 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { CONFIG_URL } from '../helper/config';
+import { useAdminRouteChecker } from '../helper/checkAdminRoute';
+//@ts-ignore
+
 //@ts-ignore
 import axios from 'axios';
 
@@ -10,14 +13,16 @@ interface AppContextType {
   setSelectedIdCategory: React.Dispatch<React.SetStateAction<string | null>>;
   handleTokenRefresh: () => Promise<string>;
   axiosInstance: typeof axios;
+  error: string | null;
+
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
-
 const LOCAL_STORAGE_KEY = 'selectedIdCategory';
 
 //@ts-ignore
 const AppProvider: React.FC = ({ children }) => {
+  useAdminRouteChecker()
   const [selectedIdProduct, setSelectedIdProduct] = useState<string | null>(null);
   const [selectedIdCategory, setSelectedIdCategory] = useState<string | null>(() => {
     const storedValue = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -36,23 +41,23 @@ const AppProvider: React.FC = ({ children }) => {
     const refreshEndpoint = `${CONFIG_URL}auth/token/refresh/`;
     try {
       const refreshToken = localStorage.getItem('refreshToken');
-  
+
       if (!refreshToken) {
         console.error('Рефреш токен не найден');
         return false;
       }
-  
+
       const response = await axios.post(refreshEndpoint, {
         refresh: refreshToken,
       });
-  
+
       if (response.status === 200) {
         localStorage.setItem('accessToken', response.data.access);
         return true;
       }
     } catch (error) {
       console.error('Ошибка во время обновления токена:', error);
-      return false; 
+      return false;
     }
   };
 
@@ -60,7 +65,7 @@ const AppProvider: React.FC = ({ children }) => {
     const instance = axios.create({
       baseURL,
     });
-  
+
     instance.interceptors.response.use(
       (response: any) => {
         return response;
@@ -80,10 +85,10 @@ const AppProvider: React.FC = ({ children }) => {
         return Promise.reject(error);
       }
     );
-  
+
     return instance;
   };
-  
+
   const contextValue = {
     selectedIdProduct,
     selectedIdCategory,

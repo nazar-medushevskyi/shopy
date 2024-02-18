@@ -4,26 +4,25 @@ import { useCategoriesForm } from '@/app/hooks/useCategoriesForm'
 import { Button, Box } from '@chakra-ui/react'
 //@ts-ignore
 import { AdminHeader } from '@/app/Components/AdminHeader'
+import { SpinnerComponent } from '@/app/Components/Spinner'
 import { AdminCategoriesComponent } from '@/app/Components/AdminCategories'
 import '../../main.scss'
 import Link from '../../../../node_modules/next/link'
-import { useEffect } from 'react'
 import { Categories } from '@/app/typesCategory'
-import { useAppContext } from '@/app/Core/Context'
 
 const CategoriesPage = () => {
 
-  const { categories, fetchCetegories, handleDelete } = useCategoriesForm()
-  const { selectedIdCategory } = useAppContext()
+  const { categories, categoriesDetails, handleDelete } = useCategoriesForm()
 
-  useEffect(() => {
-    fetchCetegories(); 
-  }, [selectedIdCategory]);
+  if(!categoriesDetails) {
+    return <SpinnerComponent />
+  }
+
 
   return (
     <>
       <Box className='adminPagesBox categoriesBox '>
-        
+
         <AdminHeader />
 
         {categories && categories.map((category: Categories) => (

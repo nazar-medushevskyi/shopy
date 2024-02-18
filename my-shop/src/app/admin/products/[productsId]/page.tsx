@@ -6,18 +6,23 @@ import { ButtonSave } from "@/app/Components/ButtonSave"
 //@ts-ignore
 import { Box } from '@chakra-ui/react';
 import { AdminInputProducts } from "@/app/Components/AdminInputProducts";
+import { SpinnerComponent } from "@/app/Components/Spinner"; 
 import { useProductsForm } from "@/app/hooks/useProductsForm";
 import { useEffect } from "react";
 import '../../../main.scss';
 
 const ProductsIdContent = () => {
 
-  const { productData, formData, handleChangeEdit, handleSubmitEdit, handleGet } = useProductsForm()
+  const { productData, formData, productsDetailsEdit, handleChangeEdit, handleSubmitEdit, handleGet } = useProductsForm()
   const { selectedIdProduct } = useAppContext()
 
   useEffect(() => {
     handleGet();
   }, []);
+
+  if (!productsDetailsEdit) {
+    return <SpinnerComponent />
+  }
 
   console.log(selectedIdProduct);
 

@@ -3,6 +3,7 @@
 import { useCategoriesForm } from '@/app/hooks/useCategoriesForm';
 //@ts-ignore
 import { AdminHeader } from '@/app/Components/AdminHeader';
+import { SpinnerComponent } from '@/app/Components/Spinner';
 import { AdminInputName } from '@/app/Components/AdminInputName';
 import { ButtonSave } from '@/app/Components/ButtonSave';
 //@ts-ignore
@@ -11,7 +12,8 @@ import '../../../main.scss';
 
 const CategoriesAdd = () => {
 
-  const { handleSubmit, categories, handleChange, formData } = useCategoriesForm()
+  const { handleSubmit, handleChange, formData } = useCategoriesForm()
+
 
   return (
     <>

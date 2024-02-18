@@ -1,11 +1,9 @@
 'use client'
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppContext } from '../Core/Context';
-import { useIsRegistered } from './useRegistrationStatus';
 import { Categories } from '../typesCategory';
 import { useRouter } from '../../../node_modules/next/navigation';
-import axios from '../../../node_modules/axios/index';
 
 //@ts-ignore
 export const useCategoriesForm = () => {
@@ -16,12 +14,15 @@ export const useCategoriesForm = () => {
     id: '',
   });
 
-  const { selectedIdCategory, handleTokenRefresh, axiosInstance } = useAppContext()
+  const selectedShopId = localStorage.getItem(`storeId`)
+  const { selectedIdCategory, axiosInstance } = useAppContext()
   const [errors, setErrors] = useState({});
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [categories, setCategories] = useState<Categories[]>([]);
-  const selectedShopId = useIsRegistered().selectedShopId;
-  const [categoriesIdTake, setCategoriesTake] = useState(null)
+  const [categoriesIdTake, setCategoriesTake] = useState(null);
+  const [categoriesDetails, setCategoriesDetails] = useState(null)
+  const [categoriesDetailsEdit, setCategoriesDetailsEdit] = useState(null)
+
   const updatedAccessToken = localStorage.getItem(`accessToken`);
   const API = `shop/${selectedShopId}/categories/`
   const API_DELETE = `shop/${selectedShopId}/categories`
@@ -70,7 +71,13 @@ export const useCategoriesForm = () => {
     }
   };
 
+  useEffect(() => {
+    console.log('blablabla');
+    fetchCetegories();
+  }, []);
+
   const fetchCetegories = async () => {
+    console.log('check')
     try {
       const response = await axiosInstance.get(`${API}`, {
         headers: {
@@ -79,14 +86,15 @@ export const useCategoriesForm = () => {
         },
       });
 
-        const responseData = response.data;
-        setCategoriesTake(responseData.results[0].id);
-        const simplifiedCategories = responseData.results.map((result: { name: any; id: any; }) => ({
-          name: result.name,
-          id: result.id,
-        }));
-        setCategories(simplifiedCategories);
-      
+      const responseData = response.data;
+      setCategoriesDetails(responseData);
+      setCategoriesTake(responseData.results[0].id);
+      const simplifiedCategories = responseData.results.map((result: { name: any; id: any; }) => ({
+        name: result.name,
+        id: result.id,
+      }));
+      setCategories(simplifiedCategories);
+
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
@@ -101,24 +109,9 @@ export const useCategoriesForm = () => {
           Authorization: `Bearer ${updatedAccessToken}`,
         },
       });
-  
-      fetchCetegories();
 
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        const refreshSuccessful = await handleTokenRefresh();
-        if (refreshSuccessful) {
-          const newAccessToken = localStorage.getItem('accessToken');
-          const newResponse = await axios.delete(`${API_DELETE}/${id}`, {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${newAccessToken}`,
-            },
-          });
-        }
-      } else {
-        console.error('Error deleting category:', error);
-      }
+      console.log(error);
     }
   };
 
@@ -133,6 +126,9 @@ export const useCategoriesForm = () => {
 
       const { name } = response.data;
       setCategoryData({ name });
+
+      const responseEditDetails = response.data;
+      setCategoriesDetailsEdit(responseEditDetails)
 
     } catch (error) {
       console.error('Error fetching category:', error);
@@ -170,6 +166,8 @@ export const useCategoriesForm = () => {
     categories,
     categoriesIdTake,
     categoryData,
+    categoriesDetails,
+    categoriesDetailsEdit,
 
     fetchCetegories,
     handleDelete,

@@ -4,13 +4,14 @@ import { AdminHeader } from "@/app/Components/AdminHeader";
 //@ts-ignore
 import { Box } from '@chakra-ui/react';
 import { useAppContext } from "@/app/Core/Context";
+import { SpinnerComponent } from "@/app/Components/Spinner";
 import { AdminInputName } from "@/app/Components/AdminInputName";
 import { ButtonSave } from "@/app/Components/ButtonSave";
 import { useCategoriesForm } from "@/app/hooks/useCategoriesForm";
 import { useEffect } from "react";
 
 const CategoryPageEdit = () => {
-  const { formData, categoryData, handleSubmitEdit, handleGet, handleChangeEdit } = useCategoriesForm();
+  const { formData, handleSubmitEdit, categoriesDetailsEdit, categoryData, handleGet, handleChangeEdit } = useCategoriesForm();
 
   const { selectedIdCategory } = useAppContext()
   console.log(selectedIdCategory)
@@ -18,6 +19,10 @@ const CategoryPageEdit = () => {
   useEffect(() => {
     handleGet();
   }, []);
+
+  if (!categoriesDetailsEdit) {
+    return <SpinnerComponent />
+  }
 
   return (
     <>

@@ -6,7 +6,6 @@ import { ButtonRegistration } from './ButtonRegistration';
 import { Heading, Box, Select } from '@chakra-ui/react';
 import { useGeneralForm } from '../hooks/useGeneralForm';
 import '../main.scss';
-import { useIsRegistered } from '../hooks/useRegistrationStatus';
 import { useEffect, useState } from 'react';
 
 interface GeenralInfoProps {
@@ -24,14 +23,13 @@ export const GeneralRegistration: React.FC<GeenralInfoProps> = (
     btnText,
   }) => {
 
-
-  const isRegistered = useIsRegistered().selectedShopId;
+    const selectedShopId = localStorage.getItem(`storeId`)
   const { handleChange, handleSubmit, formData, adminPage } = useGeneralForm();
   const [pageAdmin, setPageAdmin] = useState(adminPage);
 
   useEffect(() => {
-    setPageAdmin(adminPage || (isRegistered === true));
-  }, [adminPage, isRegistered])
+    setPageAdmin(adminPage);
+  }, [adminPage, selectedShopId])
 
 
   return (

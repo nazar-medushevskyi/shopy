@@ -2,6 +2,7 @@
 import { AdminHeader } from '../../Components/AdminHeader';
 import { InputComponent } from '@/app/Components/InputComponent';
 import { ButtonSave } from '@/app/Components/ButtonSave';
+import { SpinnerComponent } from '@/app/Components/Spinner';
 //@ts-ignore
 import { Box } from '@chakra-ui/react';
 import '../../main.scss'
@@ -11,7 +12,7 @@ const General = () => {
   const { shopDetails, formData, handleChange, handleSubmit } = useShopDetails();
 
   if (!shopDetails) {
-    return <div>Loading...</div>;
+    return <SpinnerComponent />
   }
 
   return (

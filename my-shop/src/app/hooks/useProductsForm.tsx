@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useAppContext } from '../Core/Context';
-import { useIsRegistered } from './useRegistrationStatus';
 import { Products } from '../typesProduct';
 import { useRouter } from '../../../node_modules/next/navigation';
 
@@ -30,13 +29,16 @@ export const useProductsForm = () => {
     price: '',
   });
 
+  const selectedShopId = localStorage.getItem(`storeId`)
   const accessToken = localStorage.getItem(`accessToken`);
   const [errors, setErrors] = useState({});
+  const [productsDetails, setProductsDetails] = useState(null)
+  const [productsDetailsEdit, setProductsDetailsEdit] = useState(null)
+
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [products, setProducts] = useState<Products[]>([]);
-  const selectedShopId = useIsRegistered().selectedShopId;
-  const [productIdTake, setProductIdTake] = useState(null);
   const { selectedIdProduct, axiosInstance } = useAppContext();
+  const [productIdTake, setProductIdTake] = useState(null);
   const API = `shop/${selectedShopId}/products/`;
   const API_DELETE = `shop/${selectedShopId}/products`;
   const API_GET = `shop/${selectedShopId}/products/${selectedIdProduct}/`;
@@ -89,6 +91,7 @@ export const useProductsForm = () => {
       });
   
       const responseData = response.data;
+      setProductsDetails(responseData);
       setProductIdTake(responseData.results[0].id);
   
       const simplifiedProducts = responseData.results.map((result: any) => ({
@@ -116,6 +119,10 @@ export const useProductsForm = () => {
       });
       const { name, description, price } = response.data;
       setProductData({ name, description, price });
+
+
+      const responseEditDetails = response.data;
+      setProductsDetailsEdit(responseEditDetails)
       fetchProducts();
     } catch {
       return null;
@@ -164,6 +171,8 @@ export const useProductsForm = () => {
     products,
     productIdTake,
     productData,
+    productsDetails,
+    productsDetailsEdit,
 
     handleChange,
     handleSubmit,
