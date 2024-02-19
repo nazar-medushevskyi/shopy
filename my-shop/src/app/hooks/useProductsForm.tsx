@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { useAppContext } from '../Core/Context';
 import { Products } from '../typesProduct';
 import { useRouter } from '../../../node_modules/next/navigation';
@@ -43,6 +43,15 @@ export const useProductsForm = () => {
   const API_DELETE = `shop/${selectedShopId}/products`;
   const API_GET = `shop/${selectedShopId}/products/${selectedIdProduct}/`;
   const API_PATCH = `shop/${selectedShopId}/products/${selectedIdProduct}/`;
+
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [countProducts] = useState(7);
+  const lastProductsIndex = currentPage * countProducts
+  const firstProductsIndex = lastProductsIndex - countProducts
+  const currentProduct = products.slice(firstProductsIndex, lastProductsIndex)
+  const paginate = (pageNumber: SetStateAction<number>) => setCurrentPage(pageNumber)
+
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setFormData({
@@ -100,6 +109,8 @@ export const useProductsForm = () => {
         price: result.price,
         id: result.id,
       }));
+
+      console.log(simplifiedProducts);
   
       setProducts(simplifiedProducts);
       
@@ -173,6 +184,9 @@ export const useProductsForm = () => {
     productData,
     productsDetails,
     productsDetailsEdit,
+    countProducts,
+    currentProduct,
+    paginate,
 
     handleChange,
     handleSubmit,

@@ -256,6 +256,41 @@
   height: 100vh;
 }
 
+.pagination-container {
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+}
+
+.buttonAddProduct {
+  position: absolute !important;
+  bottom: -1.4%;
+  right: 0;
+}
+
+.pagination-mainBlock {
+  position: absolute !important;
+  bottom: 0;
+  left: 0;
+}
+
+
+.pageProducts-link {
+  color: black;
+  background-color: white;
+  border: 1px solid black;
+  padding: 5px 10px;
+  margin-right: 5px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+}
+
+.pageProducts-link.active {
+  color: white;
+  background-color: #805ad5;
+}
+
 @media (max-width: 732px) {
 
   .menu-container {
@@ -344,9 +379,4 @@
     max-width: 300px !important;
   }
 
-  .buttonAdd {
-    position: fixed !important;
-    bottom: 0;
-    right: 20px;
-  }
 }

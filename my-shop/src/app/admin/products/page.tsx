@@ -7,6 +7,7 @@ import { Button, Box } from '@chakra-ui/react'
 import { AdminHeader } from '@/app/Components/AdminHeader'
 import { useAppContext } from '@/app/Core/Context'
 import { SpinnerComponent } from '@/app/Components/Spinner'
+import { Pagination } from '@/app/Components/Pagination'
 import { AdminCategoriesComponent } from '@/app/Components/AdminCategories'
 import '../../main.scss'
 import Link from '../../../../node_modules/next/link'
@@ -15,16 +16,19 @@ import { Products } from '@/app/typesProduct'
 
 const Productss = () => {
 
-  const { products, productsDetails, fetchProducts, handleDelete } = useProductsForm()
+  const { products, paginate, currentProduct, countProducts, productsDetails, fetchProducts, handleDelete } = useProductsForm()
   const { selectedIdProduct } = useAppContext()
+  const goToPagination = products.length > 8;
 
   useEffect(() => {
     fetchProducts();
   }, [selectedIdProduct]);
 
-  if(!productsDetails) {
+  if (!productsDetails) {
     return <SpinnerComponent />
   }
+
+  console.log(`products: ${products.length}`)
 
   return (
     <>
@@ -32,7 +36,7 @@ const Productss = () => {
         <AdminHeader />
 
         {products ? (
-          products.map((product: Products) => (
+          currentProduct.map((product: Products) => (
             <AdminCategoriesComponent
               product={product}
               key={product.id}
@@ -46,9 +50,18 @@ const Productss = () => {
           <span>ЛАЛАЛАFKKKFFK</span>
         )}
 
+
+        {goToPagination && (
+          <Pagination
+            countProducts={countProducts}
+            totalProducts={products.length}
+            paginate={paginate}
+          />
+        )}
+
         <Link href='/admin/products/add'>
           <Button
-            className='buttonAdd button-position-categories'
+            className='buttonAddProduct'
             colorScheme='purple'
           >
             +

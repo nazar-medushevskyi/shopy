@@ -52,5 +52,5 @@ export const InputComponentGeneral: React.FC<InputComponentGeneralProps> = ({
         </InputRightAddon>
       </InputGroup>
     </>
-  )
-}
+  );
+};

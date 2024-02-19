@@ -11,6 +11,7 @@ import { useProductsForm } from "@/app/hooks/useProductsForm";
 import { useEffect } from "react";
 import '../../../main.scss';
 
+
 const ProductsIdContent = () => {
 
   const { productData, formData, productsDetailsEdit, handleChangeEdit, handleSubmitEdit, handleGet } = useProductsForm()
