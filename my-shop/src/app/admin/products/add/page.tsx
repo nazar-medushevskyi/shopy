@@ -23,8 +23,8 @@ const ProductsAdd = () => {
             sum={'0.00'}
             formData={formData}
             handleChange={handleChange}
+            isValueComponent={false}
           />
-
             <ButtonSave  btnText={'Save'} />
         </form>
       </Box>

@@ -7,16 +7,13 @@ import { GeneralRegistration } from '../Components/GeneralRegistration';
 
 const Admin = () => {
   const router = useRouter();
-
   const [state, setState] = useState(false)
   const selectedShopId = localStorage.getItem(`storeId`)
   const isRegistered = selectedShopId;
-  console.log('isRegistered')
-  console.log(isRegistered)
+  const accessToken = localStorage.getItem('accessToken');
 
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
     accessToken ? setState(!!isRegistered) : router.push('/login');
   }, [isRegistered]);
 

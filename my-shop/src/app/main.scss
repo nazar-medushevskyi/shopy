@@ -39,7 +39,7 @@
 }
 
 .menu-button-container__text {
-  color: #000;
+  color: #2D3748;
 }
 
 .form-container {
@@ -61,8 +61,8 @@
 }
 
 .save-button {
-  position: absolute !important;
-  bottom: 0;
+  position: fixed !important;
+  bottom: 30%;
   max-width: 500px !important;
 }
 
@@ -100,6 +100,10 @@
   }
 }
 
+.css-ki8hr4 {
+  border: 2px solid #E2E8F0;
+}
+
 .menu-button-content:hover .menu-button-container__text {
   color: white !important;
 }
@@ -107,7 +111,7 @@
 .active-adminPage-link {
   height: 80px !important;
   width: 100% !important;
-  border: 2px solid black;
+  border: 2px solid #E2E8F0;
   transition: .3s;
   background-color: #805ad5 !important;
 }
@@ -278,7 +282,7 @@
 .pageProducts-link {
   color: black;
   background-color: white;
-  border: 1px solid black;
+  border: 1px solid #E2E8F0;
   padding: 5px 10px;
   margin-right: 5px;
   cursor: pointer;
@@ -292,9 +296,12 @@
 }
 
 @media (max-width: 732px) {
-
   .menu-container {
     grid-template-columns: repeat(1, 1fr);
+  }
+
+  .form-container-adminGeneral {
+    margin-top: 150px;
   }
 
   .css-efhinx {

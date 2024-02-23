@@ -5,6 +5,7 @@ import { Button, Box } from '@chakra-ui/react'
 //@ts-ignore
 import { AdminHeader } from '@/app/Components/AdminHeader'
 import { SpinnerComponent } from '@/app/Components/Spinner'
+import { Pagination } from '@/app/Components/Pagination'
 import { AdminCategoriesComponent } from '@/app/Components/AdminCategories'
 import '../../main.scss'
 import Link from '../../../../node_modules/next/link'
@@ -12,9 +13,10 @@ import { Categories } from '@/app/typesCategory'
 
 const CategoriesPage = () => {
 
-  const { categories, categoriesDetails, handleDelete } = useCategoriesForm()
+  const { categories, paginate, quantity, countCategories, categoriesDetails, handleDelete } = useCategoriesForm()
+  const goToPagination = categories.length > 7;
 
-  if(!categoriesDetails) {
+  if (!categoriesDetails) {
     return <SpinnerComponent />
   }
 
@@ -31,12 +33,20 @@ const CategoriesPage = () => {
             key={category.id}
             title={category.name}
             handleDeleteCategory={() => handleDelete(category.id)}
-            handleDeleteProduct={() => {}}
+            handleDeleteProduct={() => { }}
           />
         ))}
 
+        {goToPagination && (
+          <Pagination
+            countProducts={countCategories}
+            totalProducts={quantity}
+            paginate={paginate}
+          />
+        )}
+
         <Link href='/admin/categories/add'>
-          <Button className='buttonAdd button-position-categories' colorScheme='purple'>+</Button>
+          <Button className='buttonAddProduct' colorScheme='purple'>+</Button>
         </Link>
       </Box>
     </>

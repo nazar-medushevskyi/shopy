@@ -3,13 +3,20 @@
 import { Text, CloseButton, Image, Button } from '@chakra-ui/react';
 //@ts-ignore
 import Link from 'next/link'
+//@ts-ignore
+
+import { useRouter } from 'next/navigation'
 import '../main.scss';
 //@ts-ignore
 import { HamburgerIcon } from '@chakra-ui/icons';
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 
 export const AdminHeader = () => {
+  const router = useRouter();
   const [currentPath, setCurrentPath] = useState('');
+  const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
+
+
 
   useEffect(() => {
     setCurrentPath(window.location.pathname);
@@ -28,10 +35,37 @@ export const AdminHeader = () => {
 
   const data = {
     categories: [
-      { id: 1, name: 'General', image: '/images/category/settings.svg', defaultImage: '/images/category/default.svg', link: generalLink },
-      { id: 2, name: 'Categories', image: '/images/category/mod.svg', defaultImage: '/images/category/default.svg', link: categories },
-      { id: 3, name: 'Products', image: '/images/category/mod.svg', defaultImage: '/images/category/default.svg', link: products },
-      { id: 4, name: 'Orders', image: '/images/category/ul.svg', defaultImage: '/images/category/default.svg', link: orders },
+      {
+        id: 1,
+        name: 'General',
+        image: `/images/category/settingBlack.svg`,
+        defaultImage: '/images/category/settingWhile.svg',
+        link: generalLink
+      },
+
+      {
+        id: 2,
+        name: 'Categories',
+        image: `/images/category/ListBlack.svg`,
+        defaultImage: '/images/category/ListWhite.svg',
+        link: categories
+      },
+
+      {
+        id: 3,
+        name: 'Products',
+        image: `/images/category/ListBlack.svg`,
+        defaultImage: '/images/category/ListWhite.svg',
+        link: products
+      },
+
+      {
+        id: 4,
+        name: 'Orders',
+        image: `/images/category/GoFileBlack.svg`,
+        defaultImage: '/images/category/GoFileWhite.svg',
+        link: orders
+      },
     ],
   };
 
@@ -78,10 +112,12 @@ export const AdminHeader = () => {
                 colorScheme='white'
                 className={`menu-button-content ${isActive(category.link) ? 'active-adminPage-link' : ''}`}
                 size='lg'
+                onMouseEnter={() => setHoveredCategory(category.id)}
+                onMouseLeave={() => setHoveredCategory(null)}
               >
 
                 <div className="menu-button-container">
-                  {isActive(category.link) ? (
+                  {isActive(category.link) || hoveredCategory === category.id ? (
                     <Image
                       className='image-logo-header'
                       src={category.defaultImage}
@@ -98,7 +134,7 @@ export const AdminHeader = () => {
                       alt="Picture of the author"
                     />
                   )}
-                  
+
                   <Text
                     className={`menu-button-container__text ${isActive(category.link) ? 'active-adminPageText' : ''}`}
                   >

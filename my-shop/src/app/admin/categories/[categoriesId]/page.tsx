@@ -37,6 +37,7 @@ const CategoryPageEdit = () => {
             name={categoryData.name}
             handleChange={handleChangeEdit}
             formData={formData}
+            isValueComponent={true}
           />
           <ButtonSave btnText='Save' />
         </form>

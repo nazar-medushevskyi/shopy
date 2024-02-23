@@ -9,6 +9,7 @@ interface AdminInputProductsProps {
   sum: string
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   formData: { name: string; description: string; price: string };
+  isValueComponent?: boolean;
 }
 
 export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
@@ -17,6 +18,7 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
   sum,
   handleChange,
   formData,
+  isValueComponent = false,
 }) => {
 
   return (
@@ -28,8 +30,7 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
         name='name'
         errorBorderColor='crimson'
         onChange={handleChange}
-        value={formData.name || name}
-      />
+        value={formData.name || (isValueComponent ? name : '')}      />
       <Input
         className='input-bg-color-general'
         variant='filled'
@@ -37,8 +38,7 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
         name='description'
         errorBorderColor='crimson'
         onChange={handleChange}
-        value={formData.description || description}
-      />
+        value={formData.description || (isValueComponent ? description : '')}      />
 
       <InputGroup className='input-bg-color-general'>
         <Input
@@ -48,7 +48,7 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
           placeholder={sum}
           name='price'
           onChange={handleChange}
-          value={formData.price || sum}
+          value={formData.price || (isValueComponent ? sum : '')}
         />
         <InputRightElement
           className='input-bg-color-general'

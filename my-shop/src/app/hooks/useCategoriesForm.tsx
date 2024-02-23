@@ -1,33 +1,48 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import { useAppContext } from '../Core/Context';
 import { Categories } from '../typesCategory';
 import { useRouter } from '../../../node_modules/next/navigation';
 
 //@ts-ignore
 export const useCategoriesForm = () => {
-
   const router = useRouter()
   const [formData, setFormData] = useState({
     name: '',
     id: '',
   });
 
+  const [categoryData, setCategoryData] = useState({
+    name: '',
+  });
+
   const selectedShopId = localStorage.getItem(`storeId`)
-  const { selectedIdCategory, axiosInstance } = useAppContext()
+  const accessToken = localStorage.getItem(`accessToken`);
   const [errors, setErrors] = useState({});
-  const [errorMessages, setErrorMessages] = useState<string[]>([]);
-  const [categories, setCategories] = useState<Categories[]>([]);
-  const [categoriesIdTake, setCategoriesTake] = useState(null);
   const [categoriesDetails, setCategoriesDetails] = useState(null)
   const [categoriesDetailsEdit, setCategoriesDetailsEdit] = useState(null)
 
-  const updatedAccessToken = localStorage.getItem(`accessToken`);
+  const [errorMessages, setErrorMessages] = useState<string[]>([]);
+  const [categories, setCategories] = useState<Categories[]>([]);
+  const [quantity, setQuantity] = useState()
+  const { selectedIdCategory, axiosInstance } = useAppContext()
+  const [categoriesIdTake, setCategoriesTake] = useState(null);
+
   const API = `shop/${selectedShopId}/categories/`
   const API_DELETE = `shop/${selectedShopId}/categories`
   const API_GET = `shop/${selectedShopId}/categories/${selectedIdCategory}/`
   const API_PATCH = `shop/${selectedShopId}/categories/${selectedIdCategory}/`
+
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [countCategories] = useState(7);
+  const lastCategoriesIndex = currentPage * countCategories
+  const firstProductsIndex = lastCategoriesIndex - countCategories
+  const currentCategory = categories.slice(firstProductsIndex, lastCategoriesIndex)
+
+
+
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setFormData({
@@ -36,11 +51,6 @@ export const useCategoriesForm = () => {
     });
   };
 
-  const [categoryData, setCategoryData] = useState({
-    name: '',
-  });
-
-  //@ts-ignore
   const handleChangeEdit = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
     setCategoryData(prevCategoryData => ({
@@ -58,69 +68,69 @@ export const useCategoriesForm = () => {
       const response = await axiosInstance.post(`${API}`, formData, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${updatedAccessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
       const responseData = response.data;
       console.log(responseData.id);
       router.push('/admin/categories');
+      await fetchCetegories();
 
     } catch (error) {
       console.log(`error: ${error}`)
     }
   };
 
-  useEffect(() => {
-    console.log('blablabla');
-    fetchCetegories();
-  }, []);
+  const paginate = (pageNumber: SetStateAction<number>) => {
+    setCurrentPage(pageNumber);
+  };
+
 
   const fetchCetegories = async () => {
     console.log('check')
     try {
       const response = await axiosInstance.get(`${API}`, {
+        params: {
+          page: currentPage,
+          page_size: countCategories,
+        },
+
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${updatedAccessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
       const responseData = response.data;
+      setQuantity(responseData.count);
       setCategoriesDetails(responseData);
       setCategoriesTake(responseData.results[0].id);
+
       const simplifiedCategories = responseData.results.map((result: { name: any; id: any; }) => ({
         name: result.name,
         id: result.id,
       }));
-      setCategories(simplifiedCategories);
+
+      setCategories(prevCategories => [...prevCategories, ...simplifiedCategories.filter((newCategory: { id: number; }) => !prevCategories.some(prevProduct => prevProduct.id === newCategory.id))]);
 
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   };
 
-  const handleDelete = async (id: number) => {
-    try {
-      console.log('Deleting category with ID:', id);
-      await axiosInstance.delete(`${API_DELETE}/${id}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${updatedAccessToken}`,
-        },
-      });
+  useEffect(() => {
+    console.log('BLablablalbalba')
+    fetchCetegories();
+  }, [currentPage]);
 
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleGet = async () => {
     try {
       const response = await axiosInstance.get(`${API_GET}`, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${updatedAccessToken}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
@@ -130,8 +140,7 @@ export const useCategoriesForm = () => {
       const responseEditDetails = response.data;
       setCategoriesDetailsEdit(responseEditDetails)
 
-    } catch (error) {
-      console.error('Error fetching category:', error);
+    } catch {
       return null;
     }
   };
@@ -139,12 +148,11 @@ export const useCategoriesForm = () => {
   //@ts-ignore
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
-    const accessTokenN = localStorage.getItem(`accessToken`);
     try {
       const response = await axiosInstance.patch(`${API_PATCH}`, categoryData, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessTokenN}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
@@ -153,9 +161,25 @@ export const useCategoriesForm = () => {
       await fetchCetegories();
       router.push('/admin/categories/');
 
-    } catch (error) {
-      console.error('Error submitting edited category:', error);
+    } catch {
       return null;
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      console.log('Deleting category with ID:', id);
+      await axiosInstance.delete(`${API_DELETE}/${id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      setCategories(prevCategories => prevCategories.filter(category => category.id !== id));
+
+    } catch (error) {
+      console.log(error);
+      return null
     }
   };
 
@@ -168,13 +192,17 @@ export const useCategoriesForm = () => {
     categoryData,
     categoriesDetails,
     categoriesDetailsEdit,
+    countCategories,
+    currentCategory,
+    quantity,
 
-    fetchCetegories,
-    handleDelete,
-    handleGet,
+    paginate,
     handleChange,
     handleSubmit,
+    handleGet,
     handleChangeEdit,
+    handleDelete,
+    fetchCetegories,
     handleSubmitEdit,
   };
 };

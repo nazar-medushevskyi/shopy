@@ -2,10 +2,10 @@
 
 import { AdminHeader } from "@/app/Components/AdminHeader"
 import { useAppContext } from "@/app/Core/Context"
+import { AdminInputProducts } from "@/app/Components/AdminInputProducts"
 import { ButtonSave } from "@/app/Components/ButtonSave"
 //@ts-ignore
 import { Box } from '@chakra-ui/react';
-import { AdminInputProducts } from "@/app/Components/AdminInputProducts";
 import { SpinnerComponent } from "@/app/Components/Spinner"; 
 import { useProductsForm } from "@/app/hooks/useProductsForm";
 import { useEffect } from "react";
@@ -19,7 +19,7 @@ const ProductsIdContent = () => {
 
   useEffect(() => {
     handleGet();
-  }, []);
+  }, [selectedIdProduct]);
 
   if (!productsDetailsEdit) {
     return <SpinnerComponent />
@@ -43,6 +43,7 @@ const ProductsIdContent = () => {
             sum={String(productData.price)}
             formData={formData}
             handleChange={handleChangeEdit}
+            isValueComponent={true}
           />
           <ButtonSave btnText='Save' />
         </form>

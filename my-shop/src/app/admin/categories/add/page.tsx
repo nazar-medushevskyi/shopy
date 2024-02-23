@@ -25,6 +25,7 @@ const CategoriesAdd = () => {
             name='Name'
             handleChange={handleChange}
             formData={formData}
+            isValueComponent={false}
           />
 
           <ButtonSave btnText={'Save'} />

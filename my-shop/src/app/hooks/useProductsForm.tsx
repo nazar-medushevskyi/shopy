@@ -1,6 +1,6 @@
 'use client'
 
-import { SetStateAction, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import { useAppContext } from '../Core/Context';
 import { Products } from '../typesProduct';
 import { useRouter } from '../../../node_modules/next/navigation';
@@ -37,8 +37,10 @@ export const useProductsForm = () => {
 
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [products, setProducts] = useState<Products[]>([]);
+  const [quantity, setQuantity] = useState()
   const { selectedIdProduct, axiosInstance } = useAppContext();
   const [productIdTake, setProductIdTake] = useState(null);
+
   const API = `shop/${selectedShopId}/products/`;
   const API_DELETE = `shop/${selectedShopId}/products`;
   const API_GET = `shop/${selectedShopId}/products/${selectedIdProduct}/`;
@@ -50,7 +52,6 @@ export const useProductsForm = () => {
   const lastProductsIndex = currentPage * countProducts
   const firstProductsIndex = lastProductsIndex - countProducts
   const currentProduct = products.slice(firstProductsIndex, lastProductsIndex)
-  const paginate = (pageNumber: SetStateAction<number>) => setCurrentPage(pageNumber)
 
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
@@ -70,9 +71,9 @@ export const useProductsForm = () => {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-  
+
     setErrorMessages([]);
-  
+
     try {
       const response = await axiosInstance.post(`${API}`, formData, {
         headers: {
@@ -80,29 +81,40 @@ export const useProductsForm = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-  
+
       const responseData = response.data;
       console.log(responseData.id);
       router.push('/admin/products');
-  
+      await fetchProducts();
+
     } catch (error) {
       console.error('Error during form submission:', error);
     }
   };
 
+  const paginate = (pageNumber: SetStateAction<number>) => {
+    setCurrentPage(pageNumber);
+  };
+
+
   const fetchProducts = async () => {
     try {
       const response = await axiosInstance.get(`${API}`, {
+        params: {
+          page: currentPage,
+          page_size: countProducts,
+        },
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
       });
-  
+
       const responseData = response.data;
+      setQuantity(responseData.count);
       setProductsDetails(responseData);
       setProductIdTake(responseData.results[0].id);
-  
+
       const simplifiedProducts = responseData.results.map((result: any) => ({
         name: result.name,
         description: result.description,
@@ -110,16 +122,19 @@ export const useProductsForm = () => {
         id: result.id,
       }));
 
-      console.log(simplifiedProducts);
-  
-      setProducts(simplifiedProducts);
-      
+      setProducts(prevProducts => [...prevProducts, ...simplifiedProducts.filter((newProduct: { id: number; }) => !prevProducts.some(prevProduct => prevProduct.id === newProduct.id))]);
+
     } catch (error) {
       console.error('Error fetching products:', error);
     }
   };
 
-  //@ts-ignore
+  useEffect(() => {
+    console.log('lalalaaLALALAL')
+    fetchProducts();
+  }, [currentPage]);
+
+
   const handleGet = async () => {
     try {
       const response = await axiosInstance.get(`${API_GET}`, {
@@ -134,7 +149,7 @@ export const useProductsForm = () => {
 
       const responseEditDetails = response.data;
       setProductsDetailsEdit(responseEditDetails)
-      fetchProducts();
+
     } catch {
       return null;
     }
@@ -150,6 +165,7 @@ export const useProductsForm = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      
       const { name, description, price } = response.data;
       setProductData({ name, description, price });
       await fetchProducts();
@@ -168,9 +184,10 @@ export const useProductsForm = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      fetchProducts();
-    } catch {
+      setProducts(prevProducts => prevProducts.filter(product => product.id !== id));
 
+    } catch (error) {
+      console.log(error)
       return null
     }
   }
@@ -186,8 +203,9 @@ export const useProductsForm = () => {
     productsDetailsEdit,
     countProducts,
     currentProduct,
-    paginate,
+    quantity,
 
+    paginate,
     handleChange,
     handleSubmit,
     handleGet,
