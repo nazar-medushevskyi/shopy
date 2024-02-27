@@ -83,7 +83,7 @@
 
 .menu-container {
   max-width: 765px !important;
-  margin: 80px auto !important;
+  margin: 20px auto !important;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
@@ -295,9 +295,47 @@
   background-color: #805ad5;
 }
 
+.selectMenu {
+  max-width: 765px !important;
+  margin: 80px auto 0 !important;
+}
+
+
+.menuButtonSelect {
+  color: #805ad5 !important;
+}
+
+.css-ez23ye {
+  width: 100% !important;
+  background-color: #805ad5 !important;
+  color: #fff !important;
+  transition: .3s;
+
+  &:hover {
+    background-color: #805ad5 !important;
+    box-shadow: #2D3748 2px;
+  }
+}
+
+.menuList-container-List {
+  width: 765px !important;
+}
+
+
 @media (max-width: 732px) {
   .menu-container {
     grid-template-columns: repeat(1, 1fr);
+  }
+
+  .menuList-container-List {
+    max-width: 300px !important;
+  }
+  
+
+  .buttonAddProduct {
+    position: absolute !important;
+    bottom: -1.4%;
+    right: 5%;
   }
 
   .form-container-adminGeneral {

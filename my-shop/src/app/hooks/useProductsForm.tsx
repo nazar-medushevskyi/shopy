@@ -29,10 +29,11 @@ export const useProductsForm = () => {
     price: '',
   });
 
-  const selectedShopId = localStorage.getItem(`storeId`)
+  const selectedShopId = localStorage.getItem('storeId');
+ 
   const accessToken = localStorage.getItem(`accessToken`);
   const [errors, setErrors] = useState({});
-  const [productsDetails, setProductsDetails] = useState(null)
+  const [productsDetails, setProductsDetails] = useState(null);
   const [productsDetailsEdit, setProductsDetailsEdit] = useState(null)
 
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
@@ -71,22 +72,27 @@ export const useProductsForm = () => {
 
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-
     setErrorMessages([]);
-
+  
     try {
+      const formData = new FormData();
+      formData.append('name', productData.name);
+      formData.append('description', productData.description);
+      formData.append('price', productData.price);
+  
       const response = await axiosInstance.post(`${API}`, formData, {
+
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
+  
       const responseData = response.data;
       console.log(responseData.id);
       router.push('/admin/products');
       await fetchProducts();
-
+  
     } catch (error) {
       console.error('Error during form submission:', error);
     }
@@ -165,10 +171,9 @@ export const useProductsForm = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      
+
       const { name, description, price } = response.data;
       setProductData({ name, description, price });
-      await fetchProducts();
       router.push('/admin/products/')
     } catch {
       return null;

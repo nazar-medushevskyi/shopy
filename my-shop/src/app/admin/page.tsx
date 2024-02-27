@@ -12,10 +12,19 @@ const Admin = () => {
   const isRegistered = selectedShopId;
   const accessToken = localStorage.getItem('accessToken');
 
+  const handlelogout = () => {
+    localStorage.removeItem('storeId');
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    
+    router.push('/login');
+  }
+
 
   useEffect(() => {
     accessToken ? setState(!!isRegistered) : router.push('/login');
   }, [isRegistered]);
+
 
   return (
     <>
@@ -23,6 +32,17 @@ const Admin = () => {
       {(state) ? (
         <>
           <AdminHeader />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          
+          <button onClick={handlelogout}>Logout</button>
         </>
       ) : (
 

@@ -14,7 +14,6 @@ interface AppContextType {
   handleTokenRefresh: () => Promise<string>;
   axiosInstance: typeof axios;
   error: string | null;
-
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -61,33 +60,42 @@ const AppProvider: React.FC = ({ children }) => {
     }
   };
 
-  const axiosInstance = (baseURL: string) => {
-    const instance = axios.create({
-      baseURL,
-    });
+ const axiosInstance = (baseURL: string) => {
+  const instance = axios.create({
+    baseURL,
+  });
 
-    instance.interceptors.response.use(
-      (response: any) => {
-        return response;
-      },
-      async (error: { response: { status: number }; config: any }) => {
-        if (error.response && error.response.status === 401) {
-          const refreshSuccessful = await handleTokenRefresh();
-          if (refreshSuccessful) {
-            const newAccessToken = localStorage.getItem('accessToken');
-            const config = error.config;
-            config.headers.Authorization = `Bearer ${newAccessToken}`;
-            return instance(config);
-          } else {
-            console.error('Failed to refresh token');
-          }
+  instance.interceptors.request.use((config: { headers: { [x: string]: string; Authorization: string; }; }) => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  });
+
+  instance.interceptors.response.use(
+    (response: any) => {
+      return response;
+    },
+    async (error: { response: { status: number }; config: any }) => {
+      if (error.response && error.response.status === 401) {
+        const refreshSuccessful = await handleTokenRefresh();
+        if (refreshSuccessful) {
+          const newAccessToken = localStorage.getItem('accessToken');
+          const config = error.config;
+          config.headers.Authorization = `Bearer ${newAccessToken}`;
+          return instance(config);
+        } else {
+          console.error('Failed to refresh token');
         }
-        return Promise.reject(error);
       }
-    );
+      return Promise.reject(error);
+    }
+  );
 
-    return instance;
-  };
+  return instance;
+};
+
 
   const contextValue = {
     selectedIdProduct,

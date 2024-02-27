@@ -43,10 +43,10 @@ export const useFormData = (formType: 'registration' | 'login') => {
           Authorization: `Bearer ${localStorage.getItem(`accessToken`)}`,
         },
       });
-
-      const IdStoreItem = response.data.shops[0].id;
-      localStorage.setItem('storeId', IdStoreItem);
-
+  
+      const newIdStoreItem = response.data.shops[0].id;
+      localStorage.setItem('storeId', newIdStoreItem);
+  
     } catch (error) {
       console.log(error);
     }

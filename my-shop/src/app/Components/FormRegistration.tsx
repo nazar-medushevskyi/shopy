@@ -109,7 +109,7 @@ export const FormInput: React.FC<FormInputProps> = (
           <p className='error-message'>{errorMessages}</p>
         )}
 
-        <ButtonRegistration btnText={'Create Shopy account'} />
+        <ButtonRegistration btnText={isLogin ? 'Log in to Shopy account' : 'Create Shopy account'} />
       </form>
     </>
   )

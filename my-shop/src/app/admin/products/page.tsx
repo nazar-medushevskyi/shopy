@@ -13,15 +13,13 @@ import Link from '../../../../node_modules/next/link'
 import { Products } from '@/app/typesProduct'
 
 const Productss = () => {
-
   const { products, paginate, quantity, currentProduct, countProducts, productsDetails, fetchProducts, handleDelete } = useProductsForm()
   const goToPagination = products.length > 7;
 
   if (!productsDetails) {
     return <SpinnerComponent />
   }
-
-  console.log(`products: ${quantity}`)
+    console.log(`products: ${quantity}`)
 
   return (
     <>

@@ -18,6 +18,16 @@ export const useCategoriesForm = () => {
   });
 
   const selectedShopId = localStorage.getItem(`storeId`)
+
+  // const [selectedShopId, setSelectedShopId] = useState<string | null>(localStorage.getItem('storeId'));
+
+
+  // useEffect(() => {
+  //   const storedShopId = localStorage.getItem('storeId');
+  //   setSelectedShopId(storedShopId);
+  // }, []);
+
+
   const accessToken = localStorage.getItem(`accessToken`);
   const [errors, setErrors] = useState({});
   const [categoriesDetails, setCategoriesDetails] = useState(null)
