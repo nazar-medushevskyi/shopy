@@ -1,116 +1,129 @@
-'use client'
+import React from "react";
+//@ts-ignore
 
-import { useState } from 'react';
-import { Icon, Input, Heading, Box, Text, Button, InputGroup, InputRightElement } from '@chakra-ui/react';
-import './main.scss'
-import { MdVisibility as ViewIcon, MdVisibilityOff as ViewOffIcon } from 'react-icons/md';
+import { ChakraProvider, Skeleton, SkeletonCircle, SkeletonText, Box, Heading, Text, Button, Flex, Link, Spacer } from "@chakra-ui/react";
 
-export default function Home() {
-  const [errorMessages, setErrorMessages] = useState<string[]>([]);
-  const [show, setShow] = useState(false)
-  const handleClick = () => setShow(!show)
-
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    first_name: 'string',
-    last_name: 'string',
-  });
-
-  const handleChange = (e: { target: { name: any; value: any; }; }) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
-
-    setErrorMessages([]);
-
-    try {
-      const response = await fetch('https://485c-37-46-231-110.ngrok-free.app/api/auth/registration/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        console.log('User registered successfully');
-      } else {
-        console.error('Registration failed');
-
-        const errorData = await response.json();
-        console.error('Server error:', errorData);
-
-        setErrorMessages([errorData.detail || 'Registration failed. Please try again.']);
-
-      }
-
-      const responseData = await response.json();
-      console.log('User registered successfully');
-      console.log('Response data:', responseData);
-    } catch (error) {
-      console.error('Error during registration:', error);
-
-      setErrorMessages(['An error occurred. Please try again.']);
-
-    }
-  };
-
+function Home() {
 
   return (
     <>
-      <Box className='container-form'>
-        <Heading as='h3' size='lg'>Create a Shopy account</Heading>
-        <form className='form-container' onSubmit={handleSubmit}>
-          <Input
-            variant='filled'
-            className={`input-bg-color ${errorMessages.length > 0 ? 'isInvalid' : ''}`}
-            placeholder="Email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            isInvalid={errorMessages.length > 0}
-            errorBorderColor='crimson'
-          />
-          <InputGroup size='md'>
-            <Input
-              className={`input-bg-color ${errorMessages.length > 0 ? 'isInvalid' : ''}`}
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              isInvalid={errorMessages.length > 0}
-              errorBorderColor='crimson'
-              pr='4.5rem'
-              type={show ? 'text' : 'password'}
-              placeholder='Enter password'
-            />
-            <InputRightElement width='4.5rem'>
-              <Button h='1.75rem' size='sm' onClick={handleClick}>
-                {show ? <Icon as={ViewIcon} /> : <Icon as={ViewOffIcon} />}
 
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-          {errorMessages.length > 0 && (
-            <p className='error-message'>
-              {errorMessages.map((message, index) => (
-                <span key={index}>{message}<br /></span>
-              ))}
-            </p>
-          )}
-          <Button type="submit" className='create-button' colorScheme='purple'>Create Shopy account</Button>
-        </form>
-        <Text fontSize='sm'>By creating an account, I agree to Shopy’s <span className='create-span-link'>Terms of Service</span> and <span className='create-span-link'>Privacy Policy</span></Text>
+      <ChakraProvider>
+        <Box>
+          {/* Меню */}
+          <Flex backgroundColor="gray.900" padding="4" alignItems="center">
+            <Box>
+              <Heading as="h1" size="lg" color="white">Shopy</Heading>
+            </Box>
+            <Spacer />
+            <Link href="./login" marginRight="4">
+              <Button colorScheme="blue" color="white">Log in</Button>
+            </Link>
+            <Link href="./signup">
+              <Button colorScheme="blue" color="white">Sign Up</Button>
+            </Link>
+          </Flex>
 
-        <div className='create-box-button'>
-          <Text fontSize='md'> Already have a Shopy account? <span className='create-span-link bold-link'>Log in</span></Text>
-        </div>
-      </Box>
+          {/* Первая секция */}
+          <Box
+            backgroundImage="url('https://t4.ftcdn.net/jpg/04/61/47/03/360_F_461470323_6TMQSkCCs9XQoTtyer8VCsFypxwRiDGU.jpg')"
+            height="600px"
+            backgroundSize="cover"
+            backgroundPosition="center"
+            textAlign="center"
+            color="white"
+            paddingTop="200px"
+          >
+            <Heading as="h1" size="2xl" marginBottom="6">
+              Create Your Online Store with Ease!
+            </Heading>
+            <Text fontSize="xl" marginBottom="8">
+              A simple and intuitive builder for your business.
+            </Text>
+            <Button colorScheme="blue" size="lg">
+              Get Started for Free
+            </Button>
+          </Box>
+
+          {/* Вторая секция */}
+          <Box padding="8" backgroundColor="gray.800" color="white">
+            <Heading as="h2" size="xl" marginBottom="4">
+              Features of Our Builder
+            </Heading>
+            <Flex justifyContent="space-around">
+              <Feature icon="💼" title="Easy to Use">
+                User-friendly interface and intuitive design.
+              </Feature>
+              <Feature icon="🚀" title="Powerful Functionality">
+                Extensive set of tools for your business needs.
+              </Feature>
+              <Feature icon="🛡️" title="Security">
+                High level of data protection and security.
+              </Feature>
+            </Flex>
+          </Box>
+
+          {/* Пятая секция */}
+          <Box padding="8" backgroundColor="gray.800" color="white">
+            <Heading as="h2" size="xl" marginBottom="4">
+              Contact Us
+            </Heading>
+            <Text fontSize="lg" marginBottom="4">
+              Get in touch with us to learn more.
+            </Text>
+            <Flex justifyContent="center">
+              <Link href='./login' marginRight="4">
+                <Button colorScheme="blue">Support</Button>
+              </Link>
+              <Link href="#">
+                <Button colorScheme="blue">Feedback</Button>
+              </Link>
+            </Flex>
+          </Box>
+
+
+          <Skeleton startColor='#1a202c' endColor='#3182ce' height='20px' />
+          <Box padding="8" backgroundColor="gray.800" color="white">
+            <Box padding='6' boxShadow='lg'>
+              <SkeletonCircle size='10' />
+              <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
+            </Box>
+          </Box>
+
+          <Box padding="8" backgroundColor="gray.800" color="white">
+            <Box padding='6' boxShadow='lg'>
+              <SkeletonCircle size='10' />
+              <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
+            </Box>
+          </Box>
+
+
+          <Box padding="8" backgroundColor="gray.800" color="white">
+            <Box padding='6' boxShadow='lg'>
+              <SkeletonCircle size='10' />
+              <SkeletonText mt='4' noOfLines={4} spacing='4' skeletonHeight='2' />
+            </Box>
+          </Box>
+          <Skeleton startColor='#1a202c' endColor='#3182ce' height='20px' />
+
+          {/* Футер */}
+          <Box bg="gray.800" color="white" p={4}>
+            <Text>© 2024 Shopy. All rights reserved.</Text>
+          </Box>
+        </Box>
+
+      </ChakraProvider>
     </>
   );
 }
+
+//@ts-ignore
+const Feature = ({ icon, title, children }) => (
+  <Box textAlign="center">
+    <Text fontSize="4xl" marginBottom="4">{icon}</Text>
+    <Heading as="h3" size="lg" marginBottom="2">{title}</Heading>
+    <Text>{children}</Text>
+  </Box>
+);
+
+export default Home;
