@@ -321,6 +321,22 @@
   width: 765px !important;
 }
 
+.buttonDeleteShopContainer {
+  position: absolute;
+  bottom: 10%;
+  width: 100% !important;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.deleteShopButton {
+  color: red;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 
 @media (max-width: 732px) {
   .menu-container {

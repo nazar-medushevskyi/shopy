@@ -5,34 +5,53 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } //@ts-ignore
   from '@chakra-ui/react'
 
+  //@ts-ignore
+  import { useDisclosure } from '@chakra-ui/react';
+
+
+
 //@ts-ignore
 import { Text, CloseButton, Image, Button } from '@chakra-ui/react';
+
 //@ts-ignore
 import Link from 'next/link'
 import { useAppContext } from '../Core/Context';
-import { useFormData } from '../hooks/useFormData';
-//@ts-ignore
 
+//@ts-ignore
 import { useRouter } from 'next/navigation'
 import '../main.scss';
+
 //@ts-ignore
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { useEffect, useState, useRef } from 'react';
 import { ChevronDownIcon } from '../../../node_modules/@chakra-ui/icons/dist/ChevronDown';
 
 export const AdminHeader = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const [currentPath, setCurrentPath] = useState('');
   const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
-  const { handleShopId } = useFormData('login')
-  const { axiosInstance } = useAppContext();
-  const accessToken = localStorage.getItem(`accessToken`);
   const [shopsCount, setShopsCount] = useState<[]>([])
   const [selectedShop, setSelectedShop] = useState(localStorage.getItem('storeId') || '');
+
+
+  //mew hoock
+  const selectedShopId = localStorage.getItem('storeId');
+  const API = `shop/${selectedShopId}`;
+  const { axiosInstance } = useAppContext();
+  const accessToken = localStorage.getItem(`accessToken`);
+
 
   const handleGetShops = async () => {
     try {
@@ -44,22 +63,69 @@ export const AdminHeader = () => {
       });
 
       const responseData = response.data;
-      setShopsCount(responseData.results.map((shop: { id: any; }) => shop.id));
+      const updatedShopIds = responseData.results.map((shop: { id: any; }) => shop.id);
+      setShopsCount(updatedShopIds);
+
+      if (!updatedShopIds.includes(selectedShop)) {
+        setSelectedShop(updatedShopIds[0] || '');
+        localStorage.setItem('storeId', updatedShopIds[0] || '');
+      }
+
       console.log(`CHECK: ${responseData}`);
     } catch (error) {
       console.log(`errorAAA: ${error}`)
     }
   }
 
+  // useEffect(() => {
+  //   handleGetShops()
+  // }, [])
+
+  //@ts-ignore
+  const handleSubmitAddStore = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.preventDefault();
+    localStorage.removeItem('storeId');
+    router.push('/admin');
+  }
+
+
+  // useEffect(() => {
+  //   localStorage.setItem('storeId', selectedShop);
+  // }, [selectedShop]);
+
+  const handleDeleteStore = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    event.currentTarget.value;
+    try {
+      await axiosInstance.delete(API, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+
+
+      await handleGetShops();
+      onClose();
+      
+    } catch (error) {
+      console.log(`errorAAA: ${error}`);
+    }
+  }
   const handleStoreChange = (shopId: any) => {
     console.log(`idShop ${shopId}`);
     setSelectedShop(shopId);
     localStorage.setItem('storeId', shopId);
   };
 
+
   useEffect(() => {
     setCurrentPath(window.location.pathname);
   }, []);
+
+  // useEffect(() => {
+  //   selectedShop
+  // }, [])
 
   const isActive = (link: string) => {
     return currentPath.startsWith(link);
@@ -107,13 +173,6 @@ export const AdminHeader = () => {
       },
     ],
   };
-
-  //@ts-ignore
-  const handleSubmitAddStore = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.preventDefault();
-    localStorage.removeItem('storeId');
-    router.push('/admin');
-  }
 
   useEffect(() => {
     if (menuRef.current) {
@@ -213,6 +272,39 @@ export const AdminHeader = () => {
             ))}
           </div>
         </div>
+
+        <div className='buttonDeleteShopContainer'>
+          <button className='deleteShopButton' onClick={onOpen}>
+            <Image
+              className='image-logo-header'
+              src='/images/category/CkDelete.svg'
+              width={25}
+              height={25}
+              alt="Picture of the author"
+            />
+            Delete selected shop
+          </button>
+        </div>
+
+
+        <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Delete My Shop #{selectedShop}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              Are you sure? You can’t undo this <br /> action afterwards.
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme='gray' mr={3} onClick={onClose} width="40%">
+              Cancel
+              </Button>
+              <Button colorScheme='red' onClick={handleDeleteStore} width="40%">Delete</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
       </div>
     </>
   )

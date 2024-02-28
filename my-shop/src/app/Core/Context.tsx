@@ -29,6 +29,10 @@ const AppProvider: React.FC = ({ children }) => {
   });
 
   useEffect(() => {
+    localStorage.getItem('storeId')
+  }, [])
+
+  useEffect(() => {
     if (selectedIdCategory !== null) {
       localStorage.setItem(LOCAL_STORAGE_KEY, selectedIdCategory);
     } else {

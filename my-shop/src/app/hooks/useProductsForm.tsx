@@ -79,6 +79,7 @@ export const useProductsForm = () => {
       formData.append('name', productData.name);
       formData.append('description', productData.description);
       formData.append('price', productData.price);
+      
   
       const response = await axiosInstance.post(`${API}`, formData, {
 
