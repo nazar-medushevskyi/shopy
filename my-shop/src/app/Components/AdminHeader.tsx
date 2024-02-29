@@ -18,8 +18,6 @@ import {
   //@ts-ignore
   import { useDisclosure } from '@chakra-ui/react';
 
-
-
 //@ts-ignore
 import { Text, CloseButton, Image, Button } from '@chakra-ui/react';
 
