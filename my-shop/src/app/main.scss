@@ -353,7 +353,9 @@
 
 .swiperElement {
   width: 100px !important;
-  height: 100px !important;
+  height: 120px !important;
+  padding-top: 15px;
+  margin-right: 20px !important;
 }
 
 .main-container-sliderProducts {
@@ -366,14 +368,25 @@
 .imageUploadProducts {
   max-width: 100px !important;
   max-height: 100px !important;
+  cursor: pointer;
 }
 
 .image-slider-product {
+  position: relative;
   width: 100px !important;
-  height: 100% !important;
+  height: 100px !important;
   object-fit: cover;
   background-position: center;
 }
+
+.imageUploadProducts-close {
+  position: absolute;
+  top: 5%;
+  right: -10%;
+  cursor: pointer;
+}
+
+
 
 @media (max-width: 732px) {
   .menu-container {
@@ -463,7 +476,6 @@
     margin: 20px 20px !important;
   }
 
-
   .nav {
     margin: 70px 20px !important;
   }
@@ -476,5 +488,4 @@
   .save-button {
     max-width: 300px !important;
   }
-
 }

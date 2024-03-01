@@ -1,7 +1,6 @@
 'use client'
 
 import { SetStateAction, useEffect, useState } from 'react';
-import { useCategoriesForm } from './useCategoriesForm';
 import { useAppContext } from '../Core/Context';
 import { Products } from '../typesProduct';
 import { useRouter } from '../../../node_modules/next/navigation';
@@ -24,11 +23,6 @@ export const useProductsForm = () => {
       id: '',
     });
 
-  interface Category {
-    id: any;
-    name: string;
-  }
-
   const [productData, setProductData] = useState({
     name: '',
     description: '',
@@ -36,12 +30,10 @@ export const useProductsForm = () => {
   });
 
   const selectedShopId = localStorage.getItem('storeId');
-  const { fetchCetegories } = useCategoriesForm()
   const accessToken = localStorage.getItem(`accessToken`);
   const [errors, setErrors] = useState({});
   const [productsDetails, setProductsDetails] = useState(null);
   const [productsDetailsEdit, setProductsDetailsEdit] = useState(null)
-  const [images, setImages] = useState<File[]>([]);
 
 
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
@@ -49,8 +41,6 @@ export const useProductsForm = () => {
   const [quantity, setQuantity] = useState()
   const { selectedIdProduct, axiosInstance } = useAppContext();
   const [productIdTake, setProductIdTake] = useState(null);
-  const [selectedCategories, setSelectedCategories] = useState(null);
-
 
   const API = `shop/${selectedShopId}/products/`;
   const API_DELETE = `shop/${selectedShopId}/products`;
@@ -89,8 +79,7 @@ export const useProductsForm = () => {
       formData.append('name', productData.name);
       formData.append('description', productData.description);
       formData.append('price', productData.price);
-
-
+      
       const response = await axiosInstance.post(`${API}`, formData, {
 
         headers: {
@@ -112,7 +101,6 @@ export const useProductsForm = () => {
   const paginate = (pageNumber: SetStateAction<number>) => {
     setCurrentPage(pageNumber);
   };
-
 
   const fetchProducts = async () => {
     try {
@@ -208,27 +196,6 @@ export const useProductsForm = () => {
     }
   }
 
-
-  // category
-  const handleGetCategoryList = async () => {
-    await fetchCetegories()
-  };
-
-  const handleCategoriesChange = (categoriesId: any) => {
-    console.log(`categoriesId ${categoriesId}`);
-    setSelectedCategories(categoriesId);
-  }
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const newImages: File[] = Array.from(files);
-      setImages([...images, ...newImages]);
-    }
-  };
-
-  // /category
-
   return {
     formData,
     errors,
@@ -241,12 +208,7 @@ export const useProductsForm = () => {
     countProducts,
     currentProduct,
     quantity,
-    selectedCategories,
-    images,
 
-    handleImageUpload,
-    handleCategoriesChange,
-    handleGetCategoryList,
     paginate,
     handleChange,
     handleSubmit,

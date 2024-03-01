@@ -2,6 +2,7 @@
 import { useProductsForm } from '@/app/hooks/useProductsForm';
 //@ts-ignore
 import { AdminHeader } from '@/app/Components/AdminHeader';
+import { useGetCategoriesLOgic } from '@/app/hooks/useGetCategoriesLOgic';
 import { useCategoriesForm } from '@/app/hooks/useCategoriesForm';
 import { AdminInputProducts } from '@/app/Components/AdminInputProducts';
 import { ButtonSave } from '@/app/Components/ButtonSave';
@@ -14,11 +15,16 @@ const ProductsAdd = () => {
     handleChange,
     handleSubmit,
     formData,
+  } = useProductsForm()
+
+  const {
+    selectedCategories,
     handleCategoriesChange,
     handleGetCategoryList,
-    images,
     handleImageUpload,
-  } = useProductsForm()
+    handleRemoveImage,
+    images
+  } = useGetCategoriesLOgic()
 
   const { categories } = useCategoriesForm()
 
@@ -29,6 +35,7 @@ const ProductsAdd = () => {
 
         <form className='form-container-adminGeneral' onSubmit={handleSubmit}>
           <AdminInputProducts
+            handleRemoveImage={handleRemoveImage}
             images={images}
             handleImageUpload={handleImageUpload}
             name='Name'

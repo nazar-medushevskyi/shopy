@@ -100,7 +100,6 @@ const AppProvider: React.FC = ({ children }) => {
   return instance;
 };
 
-
   const contextValue = {
     selectedIdProduct,
     selectedIdCategory,

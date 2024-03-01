@@ -33,6 +33,7 @@ interface AdminInputProductsProps {
   categories: Categories[];
   images: File[];
   handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRemoveImage: (indexToRemove: number) => void;
 }
 
 export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
@@ -44,6 +45,7 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
   categories,
   images,
 
+  handleRemoveImage,
   handleImageUpload,
   handleChange,
   handleGetCategoryList,
@@ -111,44 +113,52 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
 
       <div className='main-container-sliderProducts'>
 
-   
-
-      <label htmlFor="imageUpload" className="image-upload">
-        <Image
-          className='imageUploadProducts'
-          src='/images/category/container.svg'
-          width={200}
-          height={130}
-          alt="Picture of the author"
+        <label htmlFor="imageUpload" className="image-upload">
+          <Image
+            className='imageUploadProducts'
+            src='/images/category/container.svg'
+            width={200}
+            height={130}
+            alt="Picture of the author"
+          />
+        </label>
+        <input
+          id="imageUpload"
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleImageUpload}
+          style={{ display: 'none' }}
         />
-      </label>
-      <input
-        id="imageUpload"
-        type="file"
-        accept="image/*"
-        multiple
-        onChange={handleImageUpload}
-        style={{ display: 'none' }}
-      />
 
+        <Swiper
+          className="swiper-container"
+          spaceBetween={50}
+          slidesPerView={3}
+          onSlideChange={() => console.log('slide change')}
+          onSwiper={(swiper: any) => console.log(swiper)}
+        >
+          {images.map((image, index) => (
+            <>
+              <SwiperSlide className="swiperElement" key={index}>
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`Image ${index}`}
+                  className="image-slider-product"
+                />
 
-      <Swiper
-        className="swiper-container"
-        spaceBetween={50}
-        slidesPerView={3}
-        onSlideChange={() => console.log('slide change')}
-        onSwiper={(swiper: any) => console.log(swiper)}
-      >
-        {images.map((image, index) => (
-          <SwiperSlide className="swiperElement" key={index}>
-            <img
-              src={URL.createObjectURL(image)}
-              alt={`Image ${index}`}
-              className="image-slider-product"
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+                <Image
+                  className='imageUploadProducts-close'
+                  src='/images/category/close.svg'
+                  width={20}
+                  height={20}
+                  alt="Picture of the author"
+                  onClick={() => handleRemoveImage(index)}
+                />
+              </SwiperSlide>
+            </>
+          ))}
+        </Swiper>
       </div>
     </>
   )
