@@ -15,8 +15,8 @@ import {
 } //@ts-ignore
   from '@chakra-ui/react'
 
-  //@ts-ignore
-  import { useDisclosure } from '@chakra-ui/react';
+//@ts-ignore
+import { useDisclosure } from '@chakra-ui/react';
 
 //@ts-ignore
 import { Text, CloseButton, Image, Button } from '@chakra-ui/react';
@@ -43,6 +43,7 @@ export const AdminHeader = () => {
   const [shopsCount, setShopsCount] = useState<[]>([])
   const [selectedShop, setSelectedShop] = useState(localStorage.getItem('storeId') || '');
 
+  const [countClick, setCountClick] = useState(0)
 
   //mew hoock
   const selectedShopId = localStorage.getItem('storeId');
@@ -105,7 +106,7 @@ export const AdminHeader = () => {
 
       await handleGetShops();
       onClose();
-      
+
     } catch (error) {
       console.log(`errorAAA: ${error}`);
     }
@@ -115,6 +116,17 @@ export const AdminHeader = () => {
     setSelectedShop(shopId);
     localStorage.setItem('storeId', shopId);
   };
+
+  const onClickShopGet = () => {
+    setCountClick(prevCount => prevCount + 1)
+
+    if (countClick > 0) {
+      return;
+    }
+
+    handleGetShops()
+    console.log(countClick);
+  }
 
 
   useEffect(() => {
@@ -215,7 +227,7 @@ export const AdminHeader = () => {
         <div className="">
           <div className="selectMenu">
             <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} onClick={handleGetShops}>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />} onClick={onClickShopGet}>
                 {selectedShop ? `My Shop #${selectedShop}` : 'Actions'}
               </MenuButton>
               <MenuList className="menuList-container-List">
@@ -296,7 +308,7 @@ export const AdminHeader = () => {
 
             <ModalFooter>
               <Button colorScheme='gray' mr={3} onClick={onClose} width="40%">
-              Cancel
+                Cancel
               </Button>
               <Button colorScheme='red' onClick={handleDeleteStore} width="40%">Delete</Button>
             </ModalFooter>

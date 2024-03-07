@@ -32,12 +32,19 @@ export const useGeneralForm = () => {
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [adminPage, setAdminPage] = useState(false)
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    console.log('Input changed:', e.target.name, e.target.value);
+    const { name, value } = e.target;
+
+    if (name === 'subdomain_name' && !/^[a-zA-Z0-9]*$/.test(value)) {
+      return;
+    }
+
+    console.log('Input changed:', name, value);
 
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
 

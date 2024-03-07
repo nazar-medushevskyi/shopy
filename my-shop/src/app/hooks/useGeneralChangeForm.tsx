@@ -40,12 +40,19 @@ export const useShopDetails = () => {
     fetchShopDetails();
   }, [selectedShopId]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
+
+    if (name === 'subdomain_name' && !/^[a-zA-Z0-9]*$/.test(value)) {
+      return;
+    }
+
+    console.log('Input changed:', name, value);
+
+    setFormData({
+      ...formData,
       [name]: value,
-    }));
+    });
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
