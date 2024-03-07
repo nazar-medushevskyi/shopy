@@ -34,6 +34,8 @@ export const useFormData = (formType: 'registration' | 'login') => {
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [show, setShow] = useState(false);
   const [isFormInvalid, setIsFormInvalid] = useState(false);
+  const [accountNotFound, setAccountNotFound] = useState<boolean>(false);
+
 
   const handleShopId = async () => {
     try {
@@ -43,10 +45,10 @@ export const useFormData = (formType: 'registration' | 'login') => {
           Authorization: `Bearer ${localStorage.getItem(`accessToken`)}`,
         },
       });
-  
+
       const newIdStoreItem = response.data.shops[0].id;
       localStorage.setItem('storeId', newIdStoreItem);
-  
+
     } catch (error) {
       console.log(error);
     }
@@ -64,7 +66,10 @@ export const useFormData = (formType: 'registration' | 'login') => {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
     setErrorMessages([]);
-  
+    setIsFormInvalid(false);
+    setErrors({});
+    setAccountNotFound(false);
+
     try {
       let endpoint = '';
       if (formType === 'registration') {
@@ -72,26 +77,26 @@ export const useFormData = (formType: 'registration' | 'login') => {
       } else if (formType === 'login') {
         endpoint = `${CONFIG_URL}auth/token/`;
       }
-  
+
       const response = await axiosInstance.post(endpoint, formData, {
         headers: {
           'Content-Type': 'application/json',
         },
       });
-  
+
       const responseData = response.data;
       console.log(responseData);
-  
+
       console.log(Object.keys(responseData));
-  
-      if (response.status === 200 || response.status === 201) {
+
+      if (response.status >= 200 && response.status < 300) {
         if (formType === 'registration') {
           console.log('User registered successfully');
           const tokenResponse = await axios.post(`${CONFIG_URL}auth/token/`, {
             email: formData.email,
             password: formData.password,
           });
-  
+
           if (tokenResponse.status === 200 || tokenResponse.status === 201) {
             const tokenData = tokenResponse.data;
             console.log('Token received successfully:', tokenData);
@@ -114,18 +119,52 @@ export const useFormData = (formType: 'registration' | 'login') => {
           handleShopId()
           router.push('/admin');
         }
+      } else if (response.status === 401 || response.status === 404) {
+        setAccountNotFound(true);
       }
-    } catch (error) {
-      console.error(`Error during ${formType}:`, error);
+
+    } catch (error: any) {
+      if (error.response) {
+        const { status, data } = error.response;
+  
+        if (status === 401 || status === 404) {
+          setAccountNotFound(true);
+        }
+  
+        if (data && typeof data === 'object') {
+          let emailError = data.email && Array.isArray(data.email) ? data.email[0] : null;
+          let passwordError = data.password && Array.isArray(data.password) ? data.password[0] : null;
+  
+          const combinedErrors: string[] = [];
+  
+          if (emailError) {
+            combinedErrors.push(emailError);
+            setErrors(prevErrors => ({ ...prevErrors, email: [emailError] }));
+          }
+          if (passwordError) {
+            combinedErrors.push(passwordError);
+            setErrors(prevErrors => ({ ...prevErrors, password: [passwordError] }));
+          }
+  
+          setErrorMessages(prevErrors => [...prevErrors, ...combinedErrors]);
+        }
+        
+        
+      } else if (error.message) {
+        setErrorMessages([error.message]);
+      }
+      setIsFormInvalid(true);
     }
   };
-  
+
   return {
     formData,
     errors,
     errorMessages,
     show,
     isFormInvalid,
+    accountNotFound,
+    
     handleChange,
     handleClick,
     handleSubmit,

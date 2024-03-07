@@ -35,8 +35,11 @@ export const FormInput: React.FC<FormInputProps> = (
   const isLogin = pathname === '/login';
   console.log(isLogin);
 
-  const registrationForm = useFormData('registration');
-  const loginForm = useFormData('login');
+  // const registrationForm = useFormData('registration');
+  // const loginForm = useFormData('login');
+
+
+  const formDataHandler = useFormData(isLogin ? 'login' : 'registration');
 
   const {
     handleChange,
@@ -45,14 +48,20 @@ export const FormInput: React.FC<FormInputProps> = (
     errors,
     show,
     formData,
-    handleSubmit
-  } = isLogin ? loginForm : registrationForm;
+    handleSubmit,
+    accountNotFound
+  } = formDataHandler;
+
+  console.log(`errors.email: ${errors.email}`, `errorMessages: ${errorMessages}`);
+  console.log(`errors.password: ${errors.password}`, `errorMessages: ${errorMessages}`);
 
   return (
     <>
       <HeadingComponent title={title} />
 
       <form className='form-container' onSubmit={handleSubmit}>
+        <>
+    
         <Input
           variant='filled'
           className={`input-bg-color ${errors.email || isFormInvalid ? 'isInvalid' : ''}`}
@@ -66,7 +75,7 @@ export const FormInput: React.FC<FormInputProps> = (
 
         {errors.email && (
           <p className='error-message'>
-            {errorMessages.map((message, index) => (
+            {errors.email.map((message, index) => (
               <span key={index}>{message}<br /></span>
             ))}
           </p>
@@ -92,10 +101,10 @@ export const FormInput: React.FC<FormInputProps> = (
 
           </InputRightElement>
         </InputGroup>
-        
+
         {errors.password && (
           <p className='error-message'>
-            {errorMessages.map((message, index) => (
+            {errors.password.map((message, index) => (
               <span key={index}>{message}<br /></span>
             ))}
           </p>
@@ -105,11 +114,13 @@ export const FormInput: React.FC<FormInputProps> = (
           <Text fontSize='sm' dangerouslySetInnerHTML={{ __html: description }} />
         )}
 
-        {isLogin && (
-          <p className='error-message'>{errorMessages}</p>
-        )}
+          {accountNotFound && (
+            <p className='error-message'>No active account found with the given credentials</p>
+          )}
+
 
         <ButtonRegistration btnText={isLogin ? 'Log in to Shopy account' : 'Create Shopy account'} />
+        </>
       </form>
     </>
   )
