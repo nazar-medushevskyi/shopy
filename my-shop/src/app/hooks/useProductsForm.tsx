@@ -2,6 +2,7 @@
 
 import { SetStateAction, useEffect, useState } from 'react';
 import { useAppContext } from '../Core/Context';
+import { Categories } from '../typesCategory';
 import { Products } from '../typesProduct';
 import { useRouter } from '../../../node_modules/next/navigation';
 
@@ -10,7 +11,8 @@ interface ProductData {
   description: string;
   price: string;
   id: string;
-  categories?: boolean
+  categories: any;
+  uploaded_images: File[];
 }
 
 export const useProductsForm = () => {
@@ -21,12 +23,16 @@ export const useProductsForm = () => {
       description: '',
       price: '',
       id: '',
+      categories: '',
+      uploaded_images: [],
     });
 
   const [productData, setProductData] = useState({
     name: '',
     description: '',
     price: '',
+    categories: '',
+    uploaded_images: [],
   });
 
   const selectedShopId = localStorage.getItem('storeId');
@@ -34,7 +40,8 @@ export const useProductsForm = () => {
   const [errors, setErrors] = useState({});
   const [productsDetails, setProductsDetails] = useState(null);
   const [productsDetailsEdit, setProductsDetailsEdit] = useState(null)
-
+  // const [selectedCategories, setSelectedCategories] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState<Categories | null>(null);
 
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [products, setProducts] = useState<Products[]>([]);
@@ -53,13 +60,48 @@ export const useProductsForm = () => {
   const lastProductsIndex = currentPage * countProducts
   const firstProductsIndex = lastProductsIndex - countProducts
   const currentProduct = products.slice(firstProductsIndex, lastProductsIndex)
+  const [images, setImages] = useState<File[]>([]);
 
+  const [categoryIds, setCategoryIds] = useState<number[]>([]);
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+
+
+  const handleCategoriesChange = (selectedCategories: Categories[]) => {
+    if (selectedCategories) {
+      const categoryIdsTest = selectedCategories.map(category => category.id);
+      setCategoryIds(categoryIdsTest)
+    }
+  };
+
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      const newImages: File[] = Array.from(files);
+      const formDataToSend = new FormData();
+
+      newImages.forEach(file => {
+        formDataToSend.append('uploaded_images', file);
+      });
+
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        uploaded_images: [...prevFormData.uploaded_images, ...newImages]
+      }));
+
+      setImages([...images, ...newImages]);
+    }
+  };
+
+  const handleRemoveImage = (indexToRemove: number) => {
+    setImages(images.filter((_, index) => index !== indexToRemove));
   };
 
   const handleChangeEdit = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,16 +117,25 @@ export const useProductsForm = () => {
     setErrorMessages([]);
 
     try {
-      const formData = new FormData();
-      formData.append('name', productData.name);
-      formData.append('description', productData.description);
-      formData.append('price', productData.price);
-      
-      const response = await axiosInstance.post(`${API}`, formData, {
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('price', formData.price);
 
+      categoryIds.forEach(categoryId => {
+        formDataToSend.append('categories', categoryId.toString());
+      });
+
+      if (formData.uploaded_images.length > 0) {
+        formData.uploaded_images.forEach((file) => {
+          formDataToSend.append(`uploaded_images`, file);
+        });
+      }
+
+      const response = await axiosInstance.post(API, formDataToSend, {
         headers: {
-          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data',
         },
       });
 
@@ -92,11 +143,12 @@ export const useProductsForm = () => {
       console.log(responseData.id);
       router.push('/admin/products');
       await fetchProducts();
-
     } catch (error) {
       console.error('Error during form submission:', error);
     }
   };
+
+
 
   const paginate = (pageNumber: SetStateAction<number>) => {
     setCurrentPage(pageNumber);
@@ -125,6 +177,8 @@ export const useProductsForm = () => {
         description: result.description,
         price: result.price,
         id: result.id,
+        categories: result.categories,
+        uploaded_images: result.uploaded_images,
       }));
 
       setProducts(prevProducts => [...prevProducts, ...simplifiedProducts.filter((newProduct: { id: number; }) => !prevProducts.some(prevProduct => prevProduct.id === newProduct.id))]);
@@ -148,8 +202,8 @@ export const useProductsForm = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      const { name, description, price } = response.data;
-      setProductData({ name, description, price });
+      const { name, description, price, categories, uploaded_images } = response.data;
+      setProductData({ name, description, price, categories, uploaded_images });
 
 
       const responseEditDetails = response.data;
@@ -171,8 +225,8 @@ export const useProductsForm = () => {
         },
       });
 
-      const { name, description, price } = response.data;
-      setProductData({ name, description, price });
+      const { name, description, price, categories, uploaded_images } = response.data;
+      setProductData({ name, description, price, categories, uploaded_images });
       router.push('/admin/products/')
     } catch {
       return null;
@@ -208,7 +262,13 @@ export const useProductsForm = () => {
     countProducts,
     currentProduct,
     quantity,
+    images,
 
+    setImages,
+    handleRemoveImage,
+    handleImageUpload,
+    handleCategoriesChange,
+    setFormData,
     paginate,
     handleChange,
     handleSubmit,

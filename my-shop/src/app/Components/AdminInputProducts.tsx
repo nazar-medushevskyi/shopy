@@ -1,5 +1,15 @@
 'use client'
 
+import React from 'react';
+//@ts-ignore
+import Select from 'react-select';
+
+//@ts-ignore
+import makeAnimated from 'react-select/animated';
+
+//@ts-ignore
+const animatedComponents = makeAnimated();
+
 //@ts-ignore
 import { Input, InputGroup, Image, InputRightElement } from '@chakra-ui/react';
 //@ts-ignore
@@ -8,7 +18,6 @@ import { Categories } from '../typesCategory';
 //@ts-ignore
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
-
 
 import {
   Menu,
@@ -26,10 +35,18 @@ interface AdminInputProductsProps {
   description: string;
   sum: string
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  formData: { name: string; description: string; price: string };
+
+  formData: {
+    name: string;
+    description: string;
+    price: string,
+    categories: any,
+    uploaded_images: File[]
+  };
+
   isValueComponent?: boolean;
   handleGetCategoryList: () => void;
-  handleCategoriesChange: (category: Categories) => void;
+  handleCategoriesChange: (categories: Categories[]) => void;
   categories: Categories[];
   images: File[];
   handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -52,7 +69,7 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
   handleCategoriesChange,
 }) => {
 
-  const [selectedCategory, setSelectedCategory] = useState<Categories | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<Categories[]>([]);
 
   return (
     <>
@@ -73,22 +90,25 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
         onChange={handleChange}
         value={formData.description || (isValueComponent ? description : '')} />
 
-      <Menu className="menuList-container-List-Products">
-        <MenuButton as={Button} rightIcon={<ChevronDownIcon />} onClick={handleGetCategoryList}>
-          {selectedCategory ? selectedCategory.name : 'Select a category'}
-        </MenuButton>
-        <MenuList>
-          {categories.map((category) => (
-            <MenuItem onClick={() => {
-              handleCategoriesChange(category); setSelectedCategory(category);
-            }}
-              key={category.id}
-            >
-              {category.name}
-            </MenuItem>
-          ))}
-        </MenuList>
-      </Menu>
+
+      <Select
+        options={categories.map(category => ({
+          value: category,
+          label: category.name,
+        }))}
+        isMulti
+        onChange={(selectedOptions: { value: Categories; label: string }[] | null) => {
+          if (selectedOptions) {
+            const selectedCategories = selectedOptions.map(option => option.value);
+            setSelectedCategories(selectedCategories); 
+            handleCategoriesChange(selectedCategories); 
+          }
+        }}
+        value={selectedCategories.map(category => ({
+          value: category,
+          label: category.name,
+        }))}
+      />
 
       <InputGroup className='input-bg-color-general'>
         <Input

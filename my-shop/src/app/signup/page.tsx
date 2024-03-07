@@ -8,6 +8,35 @@ import { FormInput } from '../Components/FormRegistration';
 import Link from '../../../node_modules/next/link';
 import { useEffect } from 'react';
 
+
+
+  // const handleCategoriesChange = (selectedCategories: Categories[]) => {
+  //   if (selectedCategories) {
+  //     // Extract category IDs from selectedCategories
+  //     const categoryIds = selectedCategories.map(category => category.id);
+  
+  //     // Update formData with category IDs
+  //     setFormData(prevFormData => ({
+  //       ...prevFormData,
+  //       categories: categoryIds,
+  //     }));
+  //   }
+  // };
+
+    // const handleCategoriesChange = (selectedCategories: Categories[]) => {
+  //   if (selectedCategories) {
+  //     const categoryIds = selectedCategories.map(category => category.id);
+  
+  //     const formDataCopy = { ...formData };
+  
+  //     formDataCopy.categories = categoryIds;
+  
+  //     setFormData(formDataCopy);
+  //   }
+  // };
+
+
+
 const Create = () => {
   const router = useRouter()
 

@@ -2,6 +2,7 @@
 import { useProductsForm } from '@/app/hooks/useProductsForm';
 //@ts-ignore
 import { AdminHeader } from '@/app/Components/AdminHeader';
+import { useAppContext } from '@/app/Core/Context';
 import { useGetCategoriesLOgic } from '@/app/hooks/useGetCategoriesLOgic';
 import { useCategoriesForm } from '@/app/hooks/useCategoriesForm';
 import { AdminInputProducts } from '@/app/Components/AdminInputProducts';
@@ -14,17 +15,37 @@ const ProductsAdd = () => {
   const {
     handleChange,
     handleSubmit,
+    handleCategoriesChange,
+    handleImageUpload,
     formData,
+    images,
+    handleRemoveImage
   } = useProductsForm()
 
+  const selectedShopId = localStorage.getItem('storeId');
+  const API = `shop/${selectedShopId}/products/`;
+
   const {
-    selectedCategories,
-    handleCategoriesChange,
     handleGetCategoryList,
-    handleImageUpload,
-    handleRemoveImage,
-    images
   } = useGetCategoriesLOgic()
+
+  const { axiosInstance } = useAppContext()
+
+  const accessToken = localStorage.getItem(`accessToken`);
+
+  // test
+  const handleGetButtonCheck = async () => {
+    try {
+      await axiosInstance.get(API, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+    } catch(error) {
+      console.log(error)
+      return null
+    }
+  }
 
   const { categories } = useCategoriesForm()
 
@@ -51,6 +72,8 @@ const ProductsAdd = () => {
           <ButtonSave btnText={'Save'} />
         </form>
       </Box>
+
+      <button onClick={handleGetButtonCheck}>Test Button</button>
     </>
   )
 }
