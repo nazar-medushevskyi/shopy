@@ -12,6 +12,8 @@ import { Box } from '@chakra-ui/react';
 import '../../../main.scss';
 
 const ProductsAdd = () => {
+  const { axiosInstance } = useAppContext()
+
   const {
     handleChange,
     handleSubmit,
@@ -20,7 +22,7 @@ const ProductsAdd = () => {
     formData,
     images,
     handleRemoveImage
-  } = useProductsForm()
+  } = useProductsForm(false)
 
   const selectedShopId = localStorage.getItem('storeId');
   const API = `shop/${selectedShopId}/products/`;
@@ -28,8 +30,6 @@ const ProductsAdd = () => {
   const {
     handleGetCategoryList,
   } = useGetCategoriesLOgic()
-
-  const { axiosInstance } = useAppContext()
 
   const accessToken = localStorage.getItem(`accessToken`);
 
@@ -47,7 +47,7 @@ const ProductsAdd = () => {
     }
   }
 
-  const { categories } = useCategoriesForm()
+  const { categories } = useCategoriesForm(true)
 
   return (
     <>

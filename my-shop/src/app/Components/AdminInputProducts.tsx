@@ -18,16 +18,6 @@ import { Categories } from '../typesCategory';
 //@ts-ignore
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
-
-import {
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Button,
-} //@ts-ignore
-  from '@chakra-ui/react'
-import { ChevronDownIcon } from '../../../node_modules/@chakra-ui/icons/dist/ChevronDown';
 import { useState } from 'react';
 
 interface AdminInputProductsProps {
@@ -108,6 +98,7 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
           value: category,
           label: category.name,
         }))}
+        placeholder="Select categories"
       />
 
       <InputGroup className='input-bg-color-general'>

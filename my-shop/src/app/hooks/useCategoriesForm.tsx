@@ -6,7 +6,7 @@ import { Categories } from '../typesCategory';
 import { useRouter } from '../../../node_modules/next/navigation';
 
 //@ts-ignore
-export const useCategoriesForm = () => {
+export const useCategoriesForm = (shouldFetchCategories: boolean) => {
   const router = useRouter()
   const [formData, setFormData] = useState({
     name: '',
@@ -18,15 +18,6 @@ export const useCategoriesForm = () => {
   });
 
   const selectedShopId = localStorage.getItem(`storeId`)
-
-  // const [selectedShopId, setSelectedShopId] = useState<string | null>(localStorage.getItem('storeId'));
-
-
-  // useEffect(() => {
-  //   const storedShopId = localStorage.getItem('storeId');
-  //   setSelectedShopId(storedShopId);
-  // }, []);
-
 
   const accessToken = localStorage.getItem(`accessToken`);
   const [errors, setErrors] = useState({});
@@ -99,6 +90,10 @@ export const useCategoriesForm = () => {
 
   const fetchCetegories = async () => {
     console.log('check')
+    if (!shouldFetchCategories) {
+      return null;
+    }
+
     try {
       const response = await axiosInstance.get(`${API}`, {
         params: {
@@ -168,7 +163,6 @@ export const useCategoriesForm = () => {
 
       const { name } = response.data;
       setCategoryData({ name });
-      await fetchCetegories();
       router.push('/admin/categories/');
 
     } catch {
@@ -179,7 +173,7 @@ export const useCategoriesForm = () => {
   const handleDelete = async (id: number) => {
     try {
       console.log('Deleting category with ID:', id);
-      await axiosInstance.delete(`${API_DELETE}/${id}`, {
+      await axiosInstance.delete(`${API_DELETE}/${id}/`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,

@@ -15,7 +15,7 @@ interface ProductData {
   uploaded_images: File[];
 }
 
-export const useProductsForm = () => {
+export const useProductsForm = (shouldFetchProducts: boolean) => {
   const router = useRouter()
   const [formData, setFormData] = useState<ProductData>(
     {
@@ -56,7 +56,7 @@ export const useProductsForm = () => {
 
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [countProducts] = useState(7);
+  const [countProducts] = useState(10);
   const lastProductsIndex = currentPage * countProducts
   const firstProductsIndex = lastProductsIndex - countProducts
   const currentProduct = products.slice(firstProductsIndex, lastProductsIndex)
@@ -70,7 +70,6 @@ export const useProductsForm = () => {
       [e.target.name]: e.target.value,
     });
   };
-
 
 
   const handleCategoriesChange = (selectedCategories: Categories[]) => {
@@ -101,7 +100,14 @@ export const useProductsForm = () => {
   };
 
   const handleRemoveImage = (indexToRemove: number) => {
+    // Удалить изображение из состояния images
     setImages(images.filter((_, index) => index !== indexToRemove));
+  
+    // Удалить изображение из состояния formData.uploaded_images
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      uploaded_images: prevFormData.uploaded_images.filter((_, index) => index !== indexToRemove)
+    }));
   };
 
   const handleChangeEdit = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -155,6 +161,11 @@ export const useProductsForm = () => {
   };
 
   const fetchProducts = async () => {
+
+    if (!shouldFetchProducts) {
+      return null;
+    }
+
     try {
       const response = await axiosInstance.get(`${API}`, {
         params: {
@@ -249,6 +260,8 @@ export const useProductsForm = () => {
       return null
     }
   }
+
+  
 
   return {
     formData,

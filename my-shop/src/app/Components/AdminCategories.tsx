@@ -1,18 +1,33 @@
+'use client'
+
+
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+} //@ts-ignore
+  from '@chakra-ui/react'
+
 import { Products } from '../typesProduct';
 import { useAppContext } from '../Core/Context';
 import Link from '../../../node_modules/next/link';
 //@ts-ignore
 import { Text, Image } from '@chakra-ui/react';
 import { Categories } from '../typesCategory';
+import { useState } from 'react';
 
 interface AdminCategoriesComponentProps {
   title: string;
   imageUrl?: string;
-  handleDeleteProduct?: () => void;
-  handleDeleteCategory?: () => void;
   product?: Products;
   category?: Categories;
   onckickModal?: () => void;
+  handleDeleteOrder: () => void
 }
 
 export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> = ({
@@ -20,13 +35,26 @@ export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> =
   category,
   imageUrl,
   title,
-  handleDeleteProduct,
-  handleDeleteCategory,
+  handleDeleteOrder,
   onckickModal,
 
 }) => {
 
-  const { setSelectedIdCategory, setSelectedIdProduct } = useAppContext()
+  const {
+    setSelectedIdCategory,
+    setSelectedIdProduct,
+
+  } = useAppContext()
+
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpenModal(false);
+  };
 
   const linkCategory = `categories/${category?.id}/`
   const linkProduct = `products/${product?.id}/`
@@ -72,26 +100,36 @@ export const AdminCategoriesComponent: React.FC<AdminCategoriesComponentProps> =
               </button>
             </Link>
 
-            <button type="button" className='css-172cj4q'>
+            <button type="button" className='css-172cj4q' onClick={handleOpenModal}>
               <Image
                 className='adminCategoriesBlock-content__actions-delete css-172cj4q'
                 src='/images/category/categories/basket.svg'
                 width={20}
                 height={20}
                 alt="Picture of the author"
-                onClick={() => {
-                  //@ts-ignore
-                  handleDeleteProduct(product?.id);
-                  //@ts-ignore
-                  handleDeleteCategory(category?.id);
-
-                  console.log('Product:', product);
-
-                }} />
+              />
             </button>
           </div>
         </div>
         <div className="adminCategoriesBlock-line" />
+
+        <Modal isOpen={isOpenModal} onClose={handleCloseModal}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Delete My order</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              Are you sure? You can’t undo this <br /> action afterwards.
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme='gray' mr={3} onClick={handleCloseModal} width="40%">
+                Cancel
+              </Button>
+              <Button colorScheme='red' onClick={handleDeleteOrder} width="40%">Delete</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </div>
     </>
   )

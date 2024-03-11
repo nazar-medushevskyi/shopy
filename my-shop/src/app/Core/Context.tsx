@@ -11,6 +11,12 @@ interface AppContextType {
   setSelectedIdProduct: React.Dispatch<React.SetStateAction<string | null>>;
   selectedIdCategory: string | null;
   setSelectedIdCategory: React.Dispatch<React.SetStateAction<string | null>>;
+  chooseIdItem: boolean
+  setChooseIdItem: React.Dispatch<React.SetStateAction<boolean>>;
+  chooseIdItemIdProduct: string | null;
+  setChooseIdItemIdProduct: React.Dispatch<React.SetStateAction<string | null>>;
+  chooseIdItemIdCategory: string | null;
+  setChooseIdItemIdCategory: React.Dispatch<React.SetStateAction<string | null>>;
   handleTokenRefresh: () => Promise<string>;
   axiosInstance: typeof axios;
   error: string | null;
@@ -23,6 +29,10 @@ const LOCAL_STORAGE_KEY = 'selectedIdCategory';
 const AppProvider: React.FC = ({ children }) => {
   useAdminRouteChecker()
   const [selectedIdProduct, setSelectedIdProduct] = useState<string | null>(null);
+  const [chooseIdItem, setChooseIdItem] = useState<boolean>(false)
+  const [chooseIdItemIdProduct, setChooseIdItemIdProduct] = useState<string | null>(null)
+  const [chooseIdItemIdCategory, setChooseIdItemIdCategory] = useState<string | null>(null)
+
   const [selectedIdCategory, setSelectedIdCategory] = useState<string | null>(() => {
     const storedValue = localStorage.getItem(LOCAL_STORAGE_KEY);
     return storedValue !== null ? storedValue : null;
@@ -31,6 +41,7 @@ const AppProvider: React.FC = ({ children }) => {
   useEffect(() => {
     localStorage.getItem('storeId')
   }, [])
+
 
   useEffect(() => {
     if (selectedIdCategory !== null) {
@@ -103,10 +114,16 @@ const AppProvider: React.FC = ({ children }) => {
   const contextValue = {
     selectedIdProduct,
     selectedIdCategory,
+    chooseIdItem,
+    chooseIdItemIdProduct,
+    chooseIdItemIdCategory,
     axiosInstance: axiosInstance(CONFIG_URL),
     setSelectedIdCategory,
+    setChooseIdItemIdCategory,
     handleTokenRefresh,
     setSelectedIdProduct,
+    setChooseIdItem,
+    setChooseIdItemIdProduct
   };
 
   return (

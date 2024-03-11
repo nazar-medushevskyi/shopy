@@ -11,7 +11,13 @@ import { useCategoriesForm } from "@/app/hooks/useCategoriesForm";
 import { useEffect } from "react";
 
 const CategoryPageEdit = () => {
-  const { formData, handleSubmitEdit, categoriesDetailsEdit, categoryData, handleGet, handleChangeEdit } = useCategoriesForm();
+  const { formData,
+    handleSubmitEdit,
+    categoriesDetailsEdit,
+    categoryData,
+    handleGet,
+    handleChangeEdit
+  } = useCategoriesForm(false);
 
   const { selectedIdCategory } = useAppContext()
   console.log(selectedIdCategory)
@@ -29,7 +35,7 @@ const CategoryPageEdit = () => {
       <AdminHeader />
 
       <Box className='container-form adminPagesBox'>
-        
+
         ID: {selectedIdCategory}
 
         <form className='form-container-adminGeneral' onSubmit={handleSubmitEdit}>

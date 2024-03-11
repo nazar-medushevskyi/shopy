@@ -6,7 +6,9 @@ import { AdminInputProducts } from "@/app/Components/AdminInputProducts"
 import { ButtonSave } from "@/app/Components/ButtonSave"
 //@ts-ignore
 import { Box } from '@chakra-ui/react';
-import { SpinnerComponent } from "@/app/Components/Spinner"; 
+import { useCategoriesForm } from "@/app/hooks/useCategoriesForm"
+import { useGetCategoriesLOgic } from "@/app/hooks/useGetCategoriesLOgic"
+import { SpinnerComponent } from "@/app/Components/Spinner";
 import { useProductsForm } from "@/app/hooks/useProductsForm";
 import { useEffect } from "react";
 import '../../../main.scss';
@@ -14,8 +16,30 @@ import '../../../main.scss';
 
 const ProductsIdContent = () => {
 
-  const { productData, formData, productsDetailsEdit, handleChangeEdit, handleSubmitEdit, handleGet } = useProductsForm()
+  const {
+    productData,
+    formData,
+    productsDetailsEdit,
+    handleChangeEdit,
+    handleSubmitEdit,
+    handleGet,
+    handleRemoveImage,
+    handleImageUpload,
+    images,
+    handleCategoriesChange,
+  } = useProductsForm(true)
+
+  const { categories } = useCategoriesForm(true)
+
+  const selectedShopId = localStorage.getItem('storeId');
+  const API = `shop/${selectedShopId}/products/`;
+
+  const {
+    handleGetCategoryList,
+  } = useGetCategoriesLOgic()
+
   const { selectedIdProduct } = useAppContext()
+
 
   useEffect(() => {
     handleGet();
@@ -38,12 +62,18 @@ const ProductsIdContent = () => {
 
         <form className='form-container-adminGeneral' onSubmit={handleSubmitEdit}>
           <AdminInputProducts
+            handleRemoveImage={handleRemoveImage}
+            handleGetCategoryList={handleGetCategoryList}
+            handleImageUpload={handleImageUpload}
+            images={images}
+            handleCategoriesChange={handleCategoriesChange}
             name={String(productData.name)}
             description={String(productData.description)}
             sum={String(productData.price)}
             formData={formData}
             handleChange={handleChangeEdit}
             isValueComponent={true}
+            categories={categories}
           />
           <ButtonSave btnText='Save' />
         </form>

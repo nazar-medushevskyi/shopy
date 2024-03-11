@@ -12,7 +12,11 @@ import '../../../main.scss';
 
 const CategoriesAdd = () => {
 
-  const { handleSubmit, handleChange, formData } = useCategoriesForm()
+  const {
+    handleSubmit,
+    handleChange,
+    formData
+  } = useCategoriesForm(false)
 
 
   return (

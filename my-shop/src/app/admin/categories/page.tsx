@@ -13,7 +13,13 @@ import { Categories } from '@/app/typesCategory'
 
 const CategoriesPage = () => {
 
-  const { categories, paginate, quantity, countCategories, categoriesDetails, handleDelete } = useCategoriesForm()
+  const { categories,
+    paginate,
+    quantity,
+    countCategories,
+    categoriesDetails,
+    handleDelete
+  } = useCategoriesForm(true)
   const goToPagination = categories.length > 7;
 
   if (!categoriesDetails) {
@@ -32,8 +38,7 @@ const CategoriesPage = () => {
             category={category}
             key={category.id}
             title={category.name}
-            handleDeleteCategory={() => handleDelete(category.id)}
-            handleDeleteProduct={() => { }}
+            handleDeleteOrder={() => handleDelete(category.id)}
           />
         ))}
 

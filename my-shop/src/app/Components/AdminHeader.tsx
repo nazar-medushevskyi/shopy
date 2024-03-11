@@ -51,7 +51,6 @@ export const AdminHeader = () => {
   const { axiosInstance } = useAppContext();
   const accessToken = localStorage.getItem(`accessToken`);
 
-
   const handleGetShops = async () => {
     try {
       const response = await axiosInstance.get(`shop/`, {
@@ -76,21 +75,12 @@ export const AdminHeader = () => {
     }
   }
 
-  // useEffect(() => {
-  //   handleGetShops()
-  // }, [])
-
   //@ts-ignore
   const handleSubmitAddStore = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
     localStorage.removeItem('storeId');
     router.push('/admin');
   }
-
-
-  // useEffect(() => {
-  //   localStorage.setItem('storeId', selectedShop);
-  // }, [selectedShop]);
 
   const handleDeleteStore = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.currentTarget.value;
@@ -101,8 +91,6 @@ export const AdminHeader = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-
-
 
       await handleGetShops();
       onClose();
@@ -128,14 +116,9 @@ export const AdminHeader = () => {
     console.log(countClick);
   }
 
-
   useEffect(() => {
     setCurrentPath(window.location.pathname);
   }, []);
-
-  // useEffect(() => {
-  //   selectedShop
-  // }, [])
 
   const isActive = (link: string) => {
     return currentPath.startsWith(link);
@@ -189,6 +172,7 @@ export const AdminHeader = () => {
       menuRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, []);
+
   return (
     <>
       <header className='admin-header'>
@@ -201,6 +185,8 @@ export const AdminHeader = () => {
             alt="Picture of the author"
           />
         </div>
+
+   
 
         <a className='menu-container-burger' href="#menu">
           <button type="button" aria-label="Close" className="css-172cj4q">
