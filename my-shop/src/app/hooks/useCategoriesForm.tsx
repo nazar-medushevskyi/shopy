@@ -117,12 +117,17 @@ export const useCategoriesForm = (shouldFetchCategories: boolean) => {
         id: result.id,
       }));
 
-      setCategories(prevCategories => [...prevCategories, ...simplifiedCategories.filter((newCategory: { id: number; }) => !prevCategories.some(prevProduct => prevProduct.id === newCategory.id))]);
+      setCategories(simplifiedCategories);
+
 
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   };
+
+  const mapCategories = (categorisIds: number[]) => {
+    return categorisIds.map(id => categories.find(category => category.id === id)!).filter(Boolean);
+  }
 
   useEffect(() => {
     console.log('BLablablalbalba')
@@ -200,6 +205,7 @@ export const useCategoriesForm = (shouldFetchCategories: boolean) => {
     currentCategory,
     quantity,
 
+    mapCategories,
     paginate,
     handleChange,
     handleSubmit,

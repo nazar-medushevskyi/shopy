@@ -2,6 +2,7 @@
 
 import { AdminHeader } from "@/app/Components/AdminHeader"
 import { useAppContext } from "@/app/Core/Context"
+import { Categories } from "@/app/typesCategory"
 import { AdminInputProducts } from "@/app/Components/AdminInputProducts"
 import { ButtonSave } from "@/app/Components/ButtonSave"
 //@ts-ignore
@@ -12,7 +13,6 @@ import { SpinnerComponent } from "@/app/Components/Spinner";
 import { useProductsForm } from "@/app/hooks/useProductsForm";
 import { useEffect } from "react";
 import '../../../main.scss';
-
 
 const ProductsIdContent = () => {
 
@@ -27,18 +27,25 @@ const ProductsIdContent = () => {
     handleImageUpload,
     images,
     handleCategoriesChange,
+    handleChangeCategorySelect,
+    selectedCategories,
   } = useProductsForm(true)
 
-  const { categories } = useCategoriesForm(true)
+  console.log(`selectedCategories111: ${selectedCategories}`)
 
-  const selectedShopId = localStorage.getItem('storeId');
-  const API = `shop/${selectedShopId}/products/`;
+  const { categories, mapCategories } = useCategoriesForm(true);
 
   const {
     handleGetCategoryList,
   } = useGetCategoriesLOgic()
 
+
   const { selectedIdProduct } = useAppContext()
+
+
+  useEffect(() => {
+    handleGetCategoryList();
+  }, []);
 
 
   useEffect(() => {
@@ -49,7 +56,21 @@ const ProductsIdContent = () => {
     return <SpinnerComponent />
   }
 
+  const filterCatogies = mapCategories(selectedCategories).map(category => ({
+    value: category.id,
+    label: category.name
+  }))
+
   console.log(selectedIdProduct);
+
+  const categoriesString = String(productData.categories);
+  const categoriesArray = Array.isArray(categoriesString) ? categoriesString : categoriesString.split(',').map(categoryId => parseInt(categoryId.trim()));
+
+  const handleButtonCheckConsole = () => {
+    console.log(`categories ${productData.categories}`);
+    console.log(`uploaded_images ${productData.uploaded_images}`);
+    console.log(`categoriesArray: ${categoriesArray}`)
+  }
 
   return (
     <>
@@ -58,10 +79,11 @@ const ProductsIdContent = () => {
 
       <Box className='container-form adminPagesBox'>
 
-        ID: {selectedIdProduct}
-
         <form className='form-container-adminGeneral' onSubmit={handleSubmitEdit}>
           <AdminInputProducts
+            handleChangeCategorySelect={handleChangeCategorySelect}
+            //@ts-ignore
+            selectedCategories={filterCatogies}
             handleRemoveImage={handleRemoveImage}
             handleGetCategoryList={handleGetCategoryList}
             handleImageUpload={handleImageUpload}
@@ -69,13 +91,15 @@ const ProductsIdContent = () => {
             handleCategoriesChange={handleCategoriesChange}
             name={String(productData.name)}
             description={String(productData.description)}
+            categories={categories}
             sum={String(productData.price)}
             formData={formData}
             handleChange={handleChangeEdit}
             isValueComponent={true}
-            categories={categories}
+            productData={productData}
           />
           <ButtonSave btnText='Save' />
+          <button onClick={handleButtonCheckConsole}>click</button>
         </form>
       </Box>
     </>

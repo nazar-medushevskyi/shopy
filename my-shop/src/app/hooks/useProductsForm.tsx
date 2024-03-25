@@ -40,9 +40,6 @@ export const useProductsForm = (shouldFetchProducts: boolean) => {
   const [errors, setErrors] = useState({});
   const [productsDetails, setProductsDetails] = useState(null);
   const [productsDetailsEdit, setProductsDetailsEdit] = useState(null)
-  // const [selectedCategories, setSelectedCategories] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState<Categories | null>(null);
-
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
   const [products, setProducts] = useState<Products[]>([]);
   const [quantity, setQuantity] = useState()
@@ -63,6 +60,8 @@ export const useProductsForm = (shouldFetchProducts: boolean) => {
   const [images, setImages] = useState<File[]>([]);
 
   const [categoryIds, setCategoryIds] = useState<number[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
+
 
   const handleChange = (e: { target: { name: any; value: any } }) => {
     setFormData({
@@ -71,11 +70,46 @@ export const useProductsForm = (shouldFetchProducts: boolean) => {
     });
   };
 
-
   const handleCategoriesChange = (selectedCategories: Categories[]) => {
     if (selectedCategories) {
       const categoryIdsTest = selectedCategories.map(category => category.id);
       setCategoryIds(categoryIdsTest)
+    }
+  }
+
+
+  // const handleChangeCategorySelect = (selectedOptions: { value: Categories; label: string }[] | null) => {
+  //   if (selectedOptions) {
+  //     // Получаем список только добавленных категорий
+  //     const newlySelectedCategories = selectedOptions.map(option => option.value.id);
+  
+  //     // Добавляем только новые категории к уже существующим
+  //     setSelectedCategories(prevSelectedCategories => [
+  //       ...prevSelectedCategories,
+  //       ...newlySelectedCategories.filter(categoryId => !prevSelectedCategories.includes(categoryId))
+  //     ]);
+  
+  //     // Обновляем форму
+  //     setFormData(prevFormData => ({
+  //       ...prevFormData,
+  //       categories: [
+  //         ...prevFormData.categories,
+  //         ...selectedOptions.map(option => option.value)
+  //       ],
+  //     }));
+  //   }
+  // };
+
+  const handleChangeCategorySelect = (selectedOptions: { value: Categories; label: string }[] | null) => {
+    if (selectedOptions) {
+      const selectedCategories = selectedOptions.map(option => option.value);
+      setSelectedCategories(selectedOptions.map(option => option.value.id));
+      handleCategoriesChange(selectedCategories); 
+      
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        categories: selectedCategories,
+      }));
     }
   };
 
@@ -100,10 +134,8 @@ export const useProductsForm = (shouldFetchProducts: boolean) => {
   };
 
   const handleRemoveImage = (indexToRemove: number) => {
-    // Удалить изображение из состояния images
     setImages(images.filter((_, index) => index !== indexToRemove));
-  
-    // Удалить изображение из состояния formData.uploaded_images
+
     setFormData(prevFormData => ({
       ...prevFormData,
       uploaded_images: prevFormData.uploaded_images.filter((_, index) => index !== indexToRemove)
@@ -204,7 +236,6 @@ export const useProductsForm = (shouldFetchProducts: boolean) => {
     fetchProducts();
   }, [currentPage]);
 
-
   const handleGet = async () => {
     try {
       const response = await axiosInstance.get(`${API_GET}`, {
@@ -213,9 +244,11 @@ export const useProductsForm = (shouldFetchProducts: boolean) => {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+
       const { name, description, price, categories, uploaded_images } = response.data;
       setProductData({ name, description, price, categories, uploaded_images });
 
+      setSelectedCategories(categories);
 
       const responseEditDetails = response.data;
       setProductsDetailsEdit(responseEditDetails)
@@ -228,16 +261,35 @@ export const useProductsForm = (shouldFetchProducts: boolean) => {
   //@ts-ignore
   const handleSubmitEdit = async (e) => {
     e.preventDefault();
+    setErrorMessages([]);
+
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', formData.name);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('price', formData.price);
+
+      categoryIds.forEach(categoryId => {
+        formDataToSend.append('categories', categoryId.toString());
+      });
+
+
+      if (formData.uploaded_images.length > 0) {
+        formData.uploaded_images.forEach((file) => {
+          formDataToSend.append(`uploaded_images`, file);
+        });
+      }
+
       const response = await axiosInstance.patch(`${API_PATCH}`, productData, {
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${accessToken}`,
         },
       });
 
-      const { name, description, price, categories, uploaded_images } = response.data;
-      setProductData({ name, description, price, categories, uploaded_images });
+      const responseData = response.data;
+      console.log(responseData.id);
+
       router.push('/admin/products/')
     } catch {
       return null;
@@ -261,8 +313,6 @@ export const useProductsForm = (shouldFetchProducts: boolean) => {
     }
   }
 
-  
-
   return {
     formData,
     errors,
@@ -276,8 +326,10 @@ export const useProductsForm = (shouldFetchProducts: boolean) => {
     currentProduct,
     quantity,
     images,
+    selectedCategories,
 
     setImages,
+    handleChangeCategorySelect,
     handleRemoveImage,
     handleImageUpload,
     handleCategoriesChange,
@@ -292,4 +344,3 @@ export const useProductsForm = (shouldFetchProducts: boolean) => {
     handleChangeEdit,
   };
 };
-

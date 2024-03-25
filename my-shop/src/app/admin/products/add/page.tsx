@@ -21,7 +21,9 @@ const ProductsAdd = () => {
     handleImageUpload,
     formData,
     images,
-    handleRemoveImage
+    handleRemoveImage,
+    handleChangeCategorySelect,
+    selectedCategories,
   } = useProductsForm(false)
 
   const selectedShopId = localStorage.getItem('storeId');
@@ -41,13 +43,18 @@ const ProductsAdd = () => {
           Authorization: `Bearer ${accessToken}`,
         },
       })
-    } catch(error) {
+    } catch (error) {
       console.log(error)
       return null
     }
   }
 
-  const { categories } = useCategoriesForm(true)
+  const { categories, mapCategories } = useCategoriesForm(true)
+
+  const filterCatogies = mapCategories(selectedCategories).map(category => ({
+    value: category.id,
+    label: category.name
+  }))
 
   return (
     <>
@@ -56,6 +63,9 @@ const ProductsAdd = () => {
 
         <form className='form-container-adminGeneral' onSubmit={handleSubmit}>
           <AdminInputProducts
+            handleChangeCategorySelect={handleChangeCategorySelect}
+            //@ts-ignore
+            selectedCategories={filterCatogies}            
             handleRemoveImage={handleRemoveImage}
             images={images}
             handleImageUpload={handleImageUpload}

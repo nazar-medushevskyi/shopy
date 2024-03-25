@@ -14,7 +14,6 @@ import { AdminCategoriesComponent } from '@/app/Components/AdminCategories'
 import '../../main.scss'
 import Link from '../../../../node_modules/next/link'
 import { Products } from '@/app/typesProduct'
-import { useState } from 'react';
 
 const Productss = () => {
 
@@ -49,8 +48,6 @@ const Productss = () => {
               product={product}
               key={product.id}
               title={product.name.length > 40 ? `${product.name.slice(0, 40)}...` : product.name}
-              // handleDeleteProduct={() => handleDelete(product.id)}
-              // handleDeleteCategory={() => { }}
               imageUrl="/images/category/categories/defaultIcon.svg"
               handleDeleteOrder={() => handleDelete(product.id)}
             />

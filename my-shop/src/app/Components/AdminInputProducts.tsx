@@ -34,10 +34,15 @@ interface AdminInputProductsProps {
     uploaded_images: File[]
   };
 
+  handleChangeCategorySelect: (
+    selectedOptions: { value: Categories; label: string }[] | null
+  ) => void;
+
   isValueComponent?: boolean;
   handleGetCategoryList: () => void;
   handleCategoriesChange: (categories: Categories[]) => void;
   categories: Categories[];
+  selectedCategories: Categories[];
   images: File[];
   handleImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleRemoveImage: (indexToRemove: number) => void;
@@ -51,15 +56,20 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
   isValueComponent = false,
   categories,
   images,
+  selectedCategories,
 
   handleRemoveImage,
   handleImageUpload,
   handleChange,
-  handleGetCategoryList,
-  handleCategoriesChange,
+  handleChangeCategorySelect,
 }) => {
 
-  const [selectedCategories, setSelectedCategories] = useState<Categories[]>([]);
+  console.log(`selectedCategoriesNazar:`, selectedCategories)
+
+  const filterCategories = selectedCategories.filter(category => category !== undefined).map(category => ({
+    value: category,
+    label: category.label,
+  }))
 
   return (
     <>
@@ -87,17 +97,9 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
           label: category.name,
         }))}
         isMulti
-        onChange={(selectedOptions: { value: Categories; label: string }[] | null) => {
-          if (selectedOptions) {
-            const selectedCategories = selectedOptions.map(option => option.value);
-            setSelectedCategories(selectedCategories); 
-            handleCategoriesChange(selectedCategories); 
-          }
-        }}
-        value={selectedCategories.map(category => ({
-          value: category,
-          label: category.name,
-        }))}
+        onChange={handleChangeCategorySelect}
+        value={filterCategories}
+
         placeholder="Select categories"
       />
 
@@ -151,7 +153,7 @@ export const AdminInputProducts: React.FC<AdminInputProductsProps> = ({
         >
           {images.map((image, index) => (
             <>
-              <SwiperSlide className="swiperElement" key={index}>
+              <SwiperSlide key={image.name + index} className="swiperElement">
                 <img
                   src={URL.createObjectURL(image)}
                   alt={`Image ${index}`}
